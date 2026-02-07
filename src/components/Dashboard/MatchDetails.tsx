@@ -3,6 +3,8 @@ import { X, Trophy, Skull, Target, Zap } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
+import Image from "next/image";
+import BodyHitChart from "./BodyHitChart";
 
 interface MatchDetailsProps {
     match: Match;
@@ -72,10 +74,15 @@ export default function MatchDetails({ match, isOpen, onClose }: MatchDetailsPro
                         <div className="relative h-32 bg-gradient-to-r from-bg-secondary to-bg-primary overflow-hidden">
                             <div className="absolute inset-0 bg-gradient-to-r from-black/40 to-transparent z-10" />
                             {/* Map Image Background with Dynamic UUID */}
-                            <div
-                                className="absolute inset-0 opacity-40 bg-cover bg-center transition-all duration-700 hover:scale-105"
-                                style={{ backgroundImage: `url('https://media.valorant-api.com/maps/${mapId}/splash.png')` }}
-                            />
+                            <div className="absolute inset-0 z-0">
+                                <Image
+                                    src={`https://media.valorant-api.com/maps/${mapId}/splash.png`}
+                                    alt={match.map}
+                                    fill
+                                    className="object-cover opacity-60 transition-transform duration-700 hover:scale-105"
+                                    priority
+                                />
+                            </div>
 
                             <button onClick={onClose} className="absolute top-4 right-4 z-20 p-2 bg-black/20 hover:bg-black/40 rounded-full text-white transition-colors cursor-pointer">
                                 <X size={20} />
@@ -118,10 +125,17 @@ export default function MatchDetails({ match, isOpen, onClose }: MatchDetailsPro
                                 {/* Accuracy Stats */}
                                 <div className="space-y-4">
                                     <h3 className="text-sm font-bold uppercase tracking-widest text-text-secondary border-b border-white/10 pb-2">Hit Accuracy</h3>
-                                    <div className="grid grid-cols-3 gap-2">
-                                        <HitLocation label="Head" count={match.headshots} total={match.headshots + match.bodyshots + match.legshots} color="bg-accent-cyan" />
-                                        <HitLocation label="Body" count={match.bodyshots} total={match.headshots + match.bodyshots + match.legshots} color="bg-yellow-500" />
-                                        <HitLocation label="Legs" count={match.legshots} total={match.headshots + match.bodyshots + match.legshots} color="bg-accent-red" />
+                                    <div className="h-[300px] w-full bg-bg-secondary/10 rounded-xl p-4 border border-white/5 relative overflow-hidden">
+                                        <div className="absolute top-2 right-2 text-xs text-text-muted flex flex-col items-end gap-1 z-10">
+                                            <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-accent-cyan"></span> Head</span>
+                                            <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-yellow-500"></span> Body</span>
+                                            <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-accent-red"></span> Legs</span>
+                                        </div>
+                                        <BodyHitChart
+                                            head={match.headshots}
+                                            body={match.bodyshots}
+                                            legs={match.legshots}
+                                        />
                                     </div>
                                 </div>
                             </div>
@@ -159,16 +173,4 @@ function StatBox({ label, value, icon: Icon, color }: any) {
     )
 }
 
-function HitLocation({ label, count, total, color }: any) {
-    const percent = Math.round((count / total) * 100) || 0;
-    return (
-        <div className="bg-bg-secondary/30 p-3 rounded-xl border border-white/5 text-center">
-            <div className="text-xs text-text-muted uppercase font-bold mb-1">{label}</div>
-            <div className="text-xl font-bold text-text-primary mb-1">{count}</div>
-            <div className="text-[10px] text-text-muted">({percent}%)</div>
-            <div className="h-1 w-full bg-white/10 rounded-full mt-2 overflow-hidden">
-                <div className={`h-full ${color}`} style={{ width: `${percent}%` }} />
-            </div>
-        </div>
-    )
-}
+
