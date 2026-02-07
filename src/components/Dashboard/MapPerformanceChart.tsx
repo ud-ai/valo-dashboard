@@ -41,7 +41,7 @@ export default function MapPerformanceChart({ matches }: MapPerformanceChartProp
                 winRate: Math.round((stats.wins / stats.total) * 100),
                 kdRatio: parseFloat((stats.kills / stats.deaths).toFixed(2)),
             };
-        }).sort((a, b) => b.winRate - a.winRate); // Sort by Win Rate
+        }).sort((a, b) => b.winRate - a.winRate);
     }, [matches]);
 
     return (

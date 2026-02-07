@@ -76,8 +76,8 @@ export default function StatsOverview({ player }: StatsOverviewProps) {
                     key={index}
                     variants={item}
                     className={clsx(
-                        "relative overflow-hidden glass-card rounded-xl p-5 group transition-all duration-300 hover:scale-[1.02]",
-                        "border-t border-l border-border-color"
+                        "relative overflow-hidden glass-card rounded-xl p-5 group transition-all duration-300 hover:scale-[1.02] hover:shadow-xl",
+                        "border border-white/20 dark:border-white/5 shadow-sm"
                     )}
                 >
                     {/* Background Gradient */}

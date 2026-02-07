@@ -7,7 +7,7 @@ interface PlayerProfileProps {
 
 export default function PlayerProfile({ player }: PlayerProfileProps) {
     return (
-        <div className="relative w-full rounded-2xl overflow-hidden glass border border-border-color shadow-2xl">
+        <div className="relative w-full rounded-2xl overflow-hidden glass border border-white/20 dark:border-white/5 shadow-2xl transition-all duration-500 hover:shadow-accent-red/5">
             {/* Hero Background Banner */}
             <div className="absolute inset-0 bg-gradient-to-r from-accent-red/20 to-accent-purple/20 opacity-50 z-0" />
             <div className="absolute inset-0 bg-[url('https://media.valorant-api.com/maps/2bee0dc9-4ffe-519b-1cbd-7fbe763a6047/splash.png')] bg-cover bg-center opacity-10 blur-sm z-0 mix-blend-overlay" />
@@ -46,7 +46,6 @@ export default function PlayerProfile({ player }: PlayerProfileProps) {
                     <div className="flex flex-wrap items-center justify-center md:justify-start gap-4 pt-2">
                         <div className="flex items-center gap-3 px-5 py-3 rounded-xl bg-bg-card/50 border border-border-color backdrop-blur-md">
                             <div className="w-10 h-10 relative">
-                                {/* Placeholder for rank icon if available, or just use text styling */}
                                 <div className="absolute inset-0 bg-accent-red/20 rounded-full blur-md" />
                                 <div className="relative w-full h-full flex items-center justify-center font-bold text-accent-red">
                                     R

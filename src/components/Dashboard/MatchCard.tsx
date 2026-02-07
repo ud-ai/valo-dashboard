@@ -17,7 +17,7 @@ export default function MatchCard({ match }: MatchCardProps) {
         <div
             className={cn(
                 "group relative overflow-hidden rounded-xl transition-all duration-300 hover:scale-[1.005] hover:shadow-xl",
-                "bg-bg-card border border-border-color hover:border-accent-purple/20"
+                "bg-bg-card border border-border-color/50 dark:border-white/5 hover:border-accent-purple/20 shadow-sm hover:shadow-md"
             )}
         >
             {/* Colorful Side Indicator */}

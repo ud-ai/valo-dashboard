@@ -42,6 +42,15 @@ body {
   font-family: var(--font-inter);
   overflow-x: hidden;
   transition: background-color 0.3s, color 0.3s;
+  background-image:
+    radial-gradient(circle at 10% 20%, rgba(148, 163, 184, 0.1) 0%, transparent 20%),
+    radial-gradient(circle at 90% 80%, rgba(148, 163, 184, 0.1) 0%, transparent 20%);
+}
+
+.dark body {
+  background-image:
+    radial-gradient(circle at 15% 50%, rgba(114, 9, 183, 0.08), transparent 25%),
+    radial-gradient(circle at 85% 30%, rgba(67, 97, 238, 0.08), transparent 25%);
 }
 
 /* Custom Scrollbar */
@@ -64,10 +73,11 @@ body {
 
 /* Glassmorphism Utilities */
 .glass {
-  background: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(0, 0, 0, 0.05);
+  background: rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.05);
 }
 
 .dark .glass {
