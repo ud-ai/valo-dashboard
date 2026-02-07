@@ -1,4 +1,6 @@
+"use client";
 import Image from "next/image";
+import { motion } from "framer-motion";
 import { Player } from "@/types";
 
 interface PlayerProfileProps {
@@ -14,10 +16,20 @@ export default function PlayerProfile({ player }: PlayerProfileProps) {
             </div>
             <div className="absolute top-0 right-0 w-64 h-64 bg-accent-red/5 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/2 pointer-events-none" />
 
-            <div className="relative flex flex-col md:flex-row items-center gap-6 md:gap-8 z-10">
+            <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+                className="relative flex flex-col md:flex-row items-center gap-6 md:gap-8 z-10"
+            >
                 {/* Avatar Section */}
                 <div className="relative">
-                    <div className="w-24 h-24 md:w-32 md:h-32 rounded-2xl overflow-hidden ring-4 ring-bg-primary shadow-2xl relative group-hover:scale-105 transition-transform duration-500">
+                    <motion.div
+                        initial={{ scale: 0.8, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        transition={{ type: "spring", stiffness: 100, delay: 0.3 }}
+                        className="w-24 h-24 md:w-32 md:h-32 rounded-2xl overflow-hidden ring-4 ring-bg-primary shadow-2xl relative group-hover:scale-105 transition-transform duration-500"
+                    >
                         <Image
                             src={player.player_card_link}
                             alt={player.player_name}
@@ -26,11 +38,16 @@ export default function PlayerProfile({ player }: PlayerProfileProps) {
                             priority
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                    </div>
-                    <div className="absolute -bottom-2 -right-2 bg-bg-card px-3 py-1 rounded-lg border border-white/10 shadow-lg flex items-center gap-2">
+                    </motion.div>
+                    <motion.div
+                        initial={{ scale: 0 }}
+                        animate={{ scale: 1 }}
+                        transition={{ delay: 0.5 }}
+                        className="absolute -bottom-2 -right-2 bg-bg-card px-3 py-1 rounded-lg border border-white/10 shadow-lg flex items-center gap-2"
+                    >
                         <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
                         <span className="text-xs font-bold text-green-400">Online</span>
-                    </div>
+                    </motion.div>
                 </div>
 
                 {/* Info Section */}
@@ -78,7 +95,7 @@ export default function PlayerProfile({ player }: PlayerProfileProps) {
                         </div>
                     </div>
                 </div>
-            </div>
+            </motion.div>
         </div>
     );
 }

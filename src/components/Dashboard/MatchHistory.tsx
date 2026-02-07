@@ -103,14 +103,25 @@ export default function MatchHistory({ matches }: MatchHistoryProps) {
 
             <div className={`space-y-3 transition-opacity duration-200 ${isFilterOpen ? 'pointer-events-none opacity-50' : 'opacity-100'}`}>
                 <AnimatePresence mode="popLayout">
-                    {filteredMatches.map((match) => (
+                    {filteredMatches.map((match, index) => (
                         <motion.div
                             key={match.match_id}
                             layout
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
+                            custom={index}
+                            initial="hidden"
+                            animate="show"
+                            variants={{
+                                hidden: { opacity: 0, x: -20 },
+                                show: (i: number) => ({
+                                    opacity: 1,
+                                    x: 0,
+                                    transition: {
+                                        delay: i * 0.05,
+                                        duration: 0.3
+                                    }
+                                })
+                            }}
                             exit={{ opacity: 0, scale: 0.95 }}
-                            transition={{ duration: 0.4, ease: "easeOut" }}
                         >
                             <MatchCard match={match} onClick={() => !isFilterOpen && setSelectedMatch(match)} />
                         </motion.div>

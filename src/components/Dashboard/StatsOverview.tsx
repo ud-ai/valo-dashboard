@@ -3,7 +3,7 @@
 import { Match, Player } from "@/types";
 import clsx from "clsx";
 import { Crosshair, Skull, Trophy, Zap, Target, TrendingUp } from "lucide-react";
-import { motion } from "framer-motion";
+import { motion, Variants } from "framer-motion";
 import MapPerformanceChart from "./MapPerformanceChart";
 import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis } from "recharts";
 
@@ -57,13 +57,42 @@ export default function StatsOverview({ player, matches }: StatsOverviewProps) {
         },
     ];
 
+    const container: Variants = {
+        hidden: { opacity: 0 },
+        show: {
+            opacity: 1,
+            transition: {
+                staggerChildren: 0.1
+            }
+        }
+    };
+
+    const item: Variants = {
+        hidden: { opacity: 0, y: 20 },
+        show: {
+            opacity: 1,
+            y: 0,
+            transition: {
+                type: "spring",
+                stiffness: 50
+            }
+        }
+    };
+
     return (
         <div className="mt-8">
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            <motion.div
+                variants={container}
+                initial="hidden"
+                animate="show"
+                className="grid grid-cols-2 lg:grid-cols-4 gap-4"
+            >
                 {stats.map((stat, i) => (
-                    <StatCard key={i} {...stat} />
+                    <motion.div key={i} variants={item}>
+                        <StatCard {...stat} />
+                    </motion.div>
                 ))}
-            </div>
+            </motion.div>
 
             {/* Charts Section */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6 mt-6">
