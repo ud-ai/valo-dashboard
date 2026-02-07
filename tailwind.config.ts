@@ -30,6 +30,15 @@ const config: Config = {
                 "gradient-1": "linear-gradient(135deg, #ff4655 0%, #9d4edd 100%)",
                 "gradient-2": "linear-gradient(135deg, #00d4aa 0%, #00a3cc 100%)",
             },
+            keyframes: {
+                scanline: {
+                    '0%': { transform: 'translateY(-100%)' },
+                    '100%': { transform: 'translateY(100%)' },
+                }
+            },
+            animation: {
+                scanline: 'scanline 3s linear infinite',
+            }
         },
     },
     plugins: [],

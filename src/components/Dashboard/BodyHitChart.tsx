@@ -14,61 +14,74 @@ export default function BodyHitChart({ head, body, legs }: BodyHitChartProps) {
     const bodyPercent = getPercent(body);
     const legsPercent = getPercent(legs);
 
-    // Color scaling based on percentage (higher is better? or just distinct colors?)
-    // Usually, headshots are prized, so maybe distinct colors for zones.
-    // The user asked for "represent the hit accuracy data in a body... similar with leg".
-    // I will use colors based on intensity or just distinct zonal colors as in the original design (Cyan, Yellow, Red).
+    // Tactical dummy silhouette paths
+    const headPath = "M100 30 C 85 30, 75 45, 75 65 C 75 85, 85 95, 100 95 C 115 95, 125 85, 125 65 C 125 45, 115 30, 100 30 Z";
+
+    // Upper body including arms slightly
+    const bodyPath = "M 70 100 L 130 100 L 155 130 L 150 280 L 130 280 L 130 300 L 70 300 L 70 280 L 50 280 L 45 130 L 70 100 Z";
+    // More detailed body path
+    const torsoPath = "M100 98 L130 105 L155 135 L145 280 L55 280 L45 135 L70 105 Z";
+
+    const legsPath = "M55 285 L145 285 L140 480 L115 480 L110 350 L90 350 L85 480 L60 480 Z";
 
     return (
         <div className="flex flex-col items-center justify-center h-full min-h-[300px] w-full relative">
-            <svg viewBox="0 0 200 500" className="w-full h-full max-w-[200px] drop-shadow-xl filter">
-                {/* ID definitions for gradients or effects could go here */}
+            <svg viewBox="0 0 200 500" className="h-full w-auto max-h-[280px] drop-shadow-[0_0_15px_rgba(255,255,255,0.1)]">
+                <defs>
+                    <linearGradient id="scanline" x1="0%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" stopColor="rgba(255,255,255,0)" />
+                        <stop offset="50%" stopColor="rgba(255,255,255,0.1)" />
+                        <stop offset="100%" stopColor="rgba(255,255,255,0)" />
+                    </linearGradient>
+                </defs>
+
+                {/* Base Silhouette (Ghost) */}
+                <path d={headPath} className="fill-white/5 stroke-white/10 stroke-1" />
+                <path d={torsoPath} className="fill-white/5 stroke-white/10 stroke-1" />
+                <path d={legsPath} className="fill-white/5 stroke-white/10 stroke-1" />
 
                 {/* Head Zone */}
-                <g className="transition-all duration-300 hover:opacity-90 cursor-pointer group">
-                    {/* Simple Head Circle */}
-                    <circle cx="100" cy="50" r="35" className="fill-accent-cyan/20 stroke-accent-cyan stroke-2" />
-                    <circle cx="100" cy="50" r={35 * (headPercent / 100)} className="fill-accent-cyan opacity-80" />
+                <g className="transition-all duration-300 hover:opacity-100 opacity-90 cursor-pointer group">
+                    <path d={headPath} className="fill-accent-cyan/10 stroke-accent-cyan stroke-2 transition-all group-hover:fill-accent-cyan/20 group-hover:stroke-[3px]" />
+                    <path d={headPath} className="fill-accent-cyan" style={{ opacity: Math.max(0.1, headPercent / 100) }} />
 
-                    {/* Hover Connector Line */}
-                    <line x1="135" y1="50" x2="180" y2="50" stroke="white" strokeWidth="1" className="opacity-0 group-hover:opacity-100 transition-opacity" />
-                    <text x="185" y="55" fill="white" fontSize="14" className="opacity-0 group-hover:opacity-100 transition-opacity font-bold">Head: {head} ({headPercent}%)</text>
-                    <text x="100" y="55" textAnchor="middle" fill="white" fontSize="12" fontWeight="bold" className="pointer-events-none drop-shadow-md">{headPercent}%</text>
+                    {/* Floating Label */}
+                    <g className="opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                        <line x1="125" y1="65" x2="160" y2="65" stroke="white" strokeWidth="1" />
+                        <text x="165" y="70" fill="white" fontSize="14" fontWeight="bold">Head</text>
+                        <text x="165" y="86" fill="#00d4aa" fontSize="12">{headPercent}%</text>
+                    </g>
+                    <text x="100" y="70" textAnchor="middle" fill="white" fontSize="12" fontWeight="bold" className="pointer-events-none drop-shadow-md">{headPercent}%</text>
                 </g>
 
                 {/* Body Zone */}
-                <g className="transition-all duration-300 hover:opacity-90 cursor-pointer group">
-                    {/* Torso Path */}
-                    <path d="M65 95 Q100 95 135 95 L150 120 L145 280 L130 280 L130 300 L70 300 L70 280 L55 280 L50 120 Z"
-                        className="fill-yellow-500/20 stroke-yellow-500 stroke-2" />
+                <g className="transition-all duration-300 hover:opacity-100 opacity-90 cursor-pointer group">
+                    <path d={torsoPath} className="fill-yellow-500/10 stroke-yellow-500 stroke-2 transition-all group-hover:fill-yellow-500/20 group-hover:stroke-[3px]" />
+                    <path d={torsoPath} className="fill-yellow-500" style={{ opacity: Math.max(0.1, bodyPercent / 100) }} />
 
-                    {/* Fill based on percentage - simple overlay rect clipped to path or just opacity change? 
-                        Proper fill height is complex with path. Let's just use opacity of a solid inner path or overlay. 
-                        Actually, simplified approach: Background is transparent/low opacity, Foreground is filled based on %? 
-                        Applying a mask is better but complex for inline SVG without definitions. 
-                        Let's stick to base color with opacity varying by percentage? Or just fill opacity. 
-                    */}
-                    <path d="M65 95 Q100 95 135 95 L150 120 L145 280 L130 280 L130 300 L70 300 L70 280 L55 280 L50 120 Z"
-                        className="fill-yellow-500" style={{ opacity: Math.max(0.2, bodyPercent / 100) }} />
-
-
-                    <text x="100" y="200" textAnchor="middle" fill="white" fontSize="16" fontWeight="bold" className="pointer-events-none drop-shadow-md">{bodyPercent}%</text>
+                    <g className="opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                        <line x1="145" y1="190" x2="180" y2="190" stroke="white" strokeWidth="1" />
+                        <text x="185" y="195" fill="white" fontSize="14" fontWeight="bold">Body</text>
+                        <text x="185" y="211" fill="#eab308" fontSize="12">{bodyPercent}%</text>
+                    </g>
+                    <text x="100" y="200" textAnchor="middle" fill="white" fontSize="14" fontWeight="bold" className="pointer-events-none drop-shadow-md">{bodyPercent}%</text>
                 </g>
 
                 {/* Legs Zone */}
-                <g className="transition-all duration-300 hover:opacity-90 cursor-pointer group">
-                    {/* Legs Path */}
-                    <path d="M70 305 L95 305 L90 500 L75 500 Z" className="fill-accent-red/20 stroke-accent-red stroke-2" />
-                    <path d="M105 305 L130 305 L125 500 L110 500 Z" className="fill-accent-red/20 stroke-accent-red stroke-2" />
+                <g className="transition-all duration-300 hover:opacity-100 opacity-90 cursor-pointer group">
+                    <path d={legsPath} className="fill-accent-red/10 stroke-accent-red stroke-2 transition-all group-hover:fill-accent-red/20 group-hover:stroke-[3px]" />
+                    <path d={legsPath} className="fill-accent-red" style={{ opacity: Math.max(0.1, legsPercent / 100) }} />
 
-                    <path d="M70 305 L95 305 L90 500 L75 500 Z" className="fill-accent-red" style={{ opacity: Math.max(0.2, legsPercent / 100) }} />
-                    <path d="M105 305 L130 305 L125 500 L110 500 Z" className="fill-accent-red" style={{ opacity: Math.max(0.2, legsPercent / 100) }} />
-
-                    <text x="100" y="400" textAnchor="middle" fill="white" fontSize="16" fontWeight="bold" className="pointer-events-none drop-shadow-md">{legsPercent}%</text>
+                    <g className="opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                        <line x1="140" y1="380" x2="175" y2="380" stroke="white" strokeWidth="1" />
+                        <text x="180" y="385" fill="white" fontSize="14" fontWeight="bold">Legs</text>
+                        <text x="180" y="401" fill="#ff4655" fontSize="12">{legsPercent}%</text>
+                    </g>
+                    <text x="100" y="400" textAnchor="middle" fill="white" fontSize="14" fontWeight="bold" className="pointer-events-none drop-shadow-md">{legsPercent}%</text>
                 </g>
+                {/* Scanline Effect */}
+                <rect x="0" y="0" width="200" height="500" fill="url(#scanline)" className="pointer-events-none animate-scanline opacity-30" />
             </svg>
-
-            {/* Legend / Tooltips could go here, but SVG text is fine for now */}
         </div>
     );
 }
