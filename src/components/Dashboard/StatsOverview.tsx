@@ -1,110 +1,127 @@
-"use client"; // Needs client for framer-motion if using hooks or motion components
+"use client";
 
-import { Player } from "@/types";
+import { Match, Player } from "@/types";
 import clsx from "clsx";
-import { Crosshair, Skull, Trophy, Zap } from "lucide-react";
+import { Crosshair, Skull, Trophy, Zap, Target, TrendingUp } from "lucide-react";
 import { motion } from "framer-motion";
+import MapPerformanceChart from "./MapPerformanceChart";
+import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis } from "recharts";
 
 interface StatsOverviewProps {
     player: Player;
+    matches: Match[];
 }
 
-export default function StatsOverview({ player }: StatsOverviewProps) {
+export default function StatsOverview({ player, matches }: StatsOverviewProps) {
+    // Generate some dummy chart data if not available on player object, or use a method to extract it from matches
+    // For now, using static data as per previous design, but ideally this comes from props
+    const chartData = [
+        { name: 'Jan', uv: 4000, pv: 2400, amt: 2400 },
+        { name: 'Feb', uv: 3000, pv: 1398, amt: 2210 },
+        { name: 'Mar', uv: 2000, pv: 9800, amt: 2290 },
+        { name: 'Apr', uv: 2780, pv: 3908, amt: 2000 },
+        { name: 'May', uv: 1890, pv: 4800, amt: 2181 },
+        { name: 'Jun', uv: 2390, pv: 3800, amt: 2500 },
+        { name: 'Jul', uv: 3490, pv: 4300, amt: 2100 },
+    ];
+
     const stats = [
+        {
+            label: "Win Rate",
+            value: `${player.overall_win_percent}%`,
+            icon: Trophy,
+            trend: "+2.4%", // Dummy trend for now
+            color: "text-accent-cyan",
+            chartData: chartData
+        },
         {
             label: "K/D Ratio",
             value: player.overall_kd_ratio,
-            color: "text-accent-cyan",
-            borderColor: "border-accent-cyan/20",
-            bgGradient: "from-accent-cyan/10 to-transparent",
-            icon: Crosshair,
-            subtext: "Top 5%",
+            icon: Target,
+            trend: "+0.1",
+            color: player.overall_kd_ratio >= 1 ? "text-accent-cyan" : "text-accent-red",
         },
         {
             label: "Headshot %",
             value: `${player.overall_headshot_percentage}%`,
-            color: "text-accent-purple",
-            borderColor: "border-accent-purple/20",
-            bgGradient: "from-accent-purple/10 to-transparent",
             icon: Skull,
-            subtext: "Precise",
+            trend: "-1.2%",
+            color: "text-accent-purple",
         },
         {
-            label: "Win Rate",
-            value: `${player.overall_win_percent}%`,
-            color: "text-accent-red",
-            borderColor: "border-accent-red/20",
-            bgGradient: "from-accent-red/10 to-transparent",
-            icon: Trophy,
-            subtext: "W/L Ratio",
-        },
-        {
-            label: "ACS",
+            label: "Avg Combat Score",
             value: player.overall_ACS,
-            color: "text-text-primary", // Changed to text-primary variable
-            borderColor: "border-text-primary/20",
-            bgGradient: "from-text-primary/5 to-transparent",
             icon: Zap,
-            subtext: "Combat Score",
+            trend: "+12",
+            color: "text-yellow-400",
         },
     ];
 
-    const container = {
-        hidden: { opacity: 0 },
-        show: {
-            opacity: 1,
-            transition: {
-                staggerChildren: 0.1,
-            },
-        },
-    };
+    return (
+        <div className="mt-8">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                {stats.map((stat, i) => (
+                    <StatCard key={i} {...stat} />
+                ))}
+            </div>
 
-    const item = {
-        hidden: { opacity: 0, y: 20 },
-        show: { opacity: 1, y: 0 },
-    };
+            {/* Charts Section */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6 mt-6">
+                <div className="bg-bg-secondary/20 p-4 md:p-6 rounded-2xl border border-white/5 backdrop-blur-sm">
+                    <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                        <TrendingUp size={20} className="text-accent-cyan" />
+                        Performance Trend
+                    </h3>
+                    <div className="h-48 md:h-64 w-full">
+                        <ResponsiveContainer width="100%" height="100%">
+                            <AreaChart data={chartData}>
+                                <defs>
+                                    <linearGradient id="colorKd" x1="0" y1="0" x2="0" y2="1">
+                                        <stop offset="5%" stopColor="#00d4aa" stopOpacity={0.3} />
+                                        <stop offset="95%" stopColor="#00d4aa" stopOpacity={0} />
+                                    </linearGradient>
+                                </defs>
+                                <XAxis dataKey="name" hide />
+                                <Tooltip
+                                    contentStyle={{ backgroundColor: '#1f2937', border: 'none', borderRadius: '8px' }}
+                                    itemStyle={{ color: '#fff' }}
+                                />
+                                <Area type="monotone" dataKey="uv" stroke="#00d4aa" fillOpacity={1} fill="url(#colorKd)" />
+                            </AreaChart>
+                        </ResponsiveContainer>
+                    </div>
+                </div>
 
+                {/* Map Performance Chart */}
+                <MapPerformanceChart matches={matches} />
+            </div>
+        </div>
+    );
+}
+
+function StatCard({ label, value, icon: Icon, trend, color }: any) {
     return (
         <motion.div
-            variants={container}
-            initial="hidden"
-            animate="show"
-            className="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-8"
+            whileHover={{ y: -5 }}
+            className="bg-bg-secondary/30 backdrop-blur-md p-4 md:p-5 rounded-2xl border border-white/5 relative overflow-hidden group"
         >
-            {stats.map((stat, index) => (
-                <motion.div
-                    key={index}
-                    variants={item}
-                    className={clsx(
-                        "relative overflow-hidden glass-card rounded-xl p-5 group transition-all duration-300 hover:scale-[1.02] hover:shadow-xl",
-                        "border border-white/20 dark:border-white/5 shadow-sm"
-                    )}
-                >
-                    {/* Background Gradient */}
-                    <div className={clsx("absolute inset-0 bg-gradient-to-br opacity-50 group-hover:opacity-80 transition-opacity", stat.bgGradient)} />
+            <div className={`absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity ${color}`}>
+                <Icon size={48} />
+            </div>
 
-                    <div className="relative z-10 flex flex-col h-full justify-between">
-                        <div className="flex justify-between items-start mb-4">
-                            <span className="text-text-secondary text-xs font-bold tracking-wider uppercase">
-                                {stat.label}
-                            </span>
-                            <stat.icon className={clsx("w-5 h-5 opacity-60", stat.color)} />
-                        </div>
-
-                        <div>
-                            <span className={clsx("text-3xl lg:text-4xl font-black tracking-tight", stat.color)}>
-                                {stat.value}
-                            </span>
-                            <div className="flex items-center gap-2 mt-1">
-                                <div className={clsx("h-1 w-full rounded-full bg-bg-card overflow-hidden")}>
-                                    <div className={clsx("h-full w-2/3 rounded-full opacity-60", stat.color.replace('text-', 'bg-'))} />
-                                </div>
-                                <span className="text-[10px] text-text-muted font-mono whitespace-nowrap">{stat.subtext}</span>
-                            </div>
-                        </div>
+            <div className="relative z-10">
+                <div className="flex justify-between items-start mb-2">
+                    <div className={`p-2 rounded-lg bg-white/5 ${color}`}>
+                        <Icon size={20} />
                     </div>
-                </motion.div>
-            ))}
+                    <span className={`text-xs font-bold px-2 py-1 rounded-full bg-white/5 ${trend.startsWith('+') ? 'text-green-400' : 'text-red-400'}`}>
+                        {trend}
+                    </span>
+                </div>
+
+                <p className="text-text-secondary text-xs uppercase font-bold tracking-wider mb-1">{label}</p>
+                <h3 className="text-2xl md:text-3xl font-black text-white tracking-tight">{value}</h3>
+            </div>
         </motion.div>
-    );
+    )
 }

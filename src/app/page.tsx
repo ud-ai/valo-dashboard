@@ -2,7 +2,6 @@ import playerData from "@/data/player.json";
 import PlayerProfile from "@/components/Dashboard/PlayerProfile";
 import StatsOverview from "@/components/Dashboard/StatsOverview";
 import MatchHistory from "@/components/Dashboard/MatchHistory";
-import MapPerformanceChart from "@/components/Dashboard/MapPerformanceChart";
 import { Player } from "@/types";
 
 // Type assertion for the imported JSON data
@@ -25,12 +24,7 @@ export default function Home() {
 
         {/* Stats Overview Section */}
         <section className="animate-in fade-in slide-in-from-bottom-4 duration-700 delay-100">
-          <StatsOverview player={player} />
-        </section>
-
-        {/* Map Performance Chart Section */}
-        <section className="animate-in fade-in slide-in-from-bottom-4 duration-700 delay-150">
-          <MapPerformanceChart matches={player.matches} />
+          <StatsOverview player={player} matches={player.matches} />
         </section>
 
         {/* Match History Section */}

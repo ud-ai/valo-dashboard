@@ -99,9 +99,9 @@ export default function MatchDetails({ match, isOpen, onClose }: MatchDetailsPro
                         </div>
 
                         {/* Content */}
-                        <div className="p-8 space-y-8">
+                        <div className="p-4 md:p-8 space-y-6 md:space-y-8">
                             {/* Key Stats Row */}
-                            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
                                 <StatBox label="Combat Score" value={match.ACS} icon={Zap} color="text-yellow-400" />
                                 <StatBox label="K / D / A" value={`${match.kills} / ${match.deaths} / ${match.assists}`} icon={Trophy} color="text-text-primary" />
                                 <StatBox label="KD Ratio" value={match.kd_ratio} icon={Target} color={match.kd_ratio >= 1 ? "text-accent-cyan" : "text-accent-red"} />
