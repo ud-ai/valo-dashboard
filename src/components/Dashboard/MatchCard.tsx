@@ -4,9 +4,10 @@ import { Sword, Skull, Target } from "lucide-react";
 
 interface MatchCardProps {
     match: Match;
+    onClick?: () => void;
 }
 
-export default function MatchCard({ match }: MatchCardProps) {
+export default function MatchCard({ match, onClick }: MatchCardProps) {
     const isWin = match.result === "Won";
     const isLoss = match.result === "Lost";
 
@@ -15,8 +16,9 @@ export default function MatchCard({ match }: MatchCardProps) {
 
     return (
         <div
+            onClick={onClick}
             className={cn(
-                "group relative overflow-hidden rounded-xl transition-all duration-300 hover:scale-[1.005] hover:shadow-xl",
+                "group relative overflow-hidden rounded-xl transition-all duration-300 hover:scale-[1.005] hover:shadow-xl cursor-pointer",
                 "bg-bg-card border border-border-color/50 dark:border-white/5 hover:border-accent-purple/20 shadow-sm hover:shadow-md"
             )}
         >

@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { Match } from "@/types";
 import MatchCard from "./MatchCard";
+import MatchDetails from "./MatchDetails";
 import { cn } from "@/lib/utils";
 import { Filter, Search } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -15,6 +16,7 @@ type FilterType = "All" | "Won" | "Lost";
 export default function MatchHistory({ matches }: MatchHistoryProps) {
     const [filter, setFilter] = useState<FilterType>("All");
     const [searchQuery, setSearchQuery] = useState("");
+    const [selectedMatch, setSelectedMatch] = useState<Match | null>(null);
 
     const filteredMatches = matches.filter((match) => {
         // 1. Filter by Result
@@ -85,7 +87,7 @@ export default function MatchHistory({ matches }: MatchHistoryProps) {
                             exit={{ opacity: 0, scale: 0.95 }}
                             transition={{ duration: 0.3 }}
                         >
-                            <MatchCard match={match} />
+                            <MatchCard match={match} onClick={() => setSelectedMatch(match)} />
                         </motion.div>
                     ))}
                 </AnimatePresence>
@@ -100,6 +102,15 @@ export default function MatchHistory({ matches }: MatchHistoryProps) {
                     </motion.div>
                 )}
             </div>
+
+            {/* Match Details Modal */}
+            {selectedMatch && (
+                <MatchDetails
+                    match={selectedMatch}
+                    isOpen={!!selectedMatch}
+                    onClose={() => setSelectedMatch(null)}
+                />
+            )}
         </div>
     );
 }

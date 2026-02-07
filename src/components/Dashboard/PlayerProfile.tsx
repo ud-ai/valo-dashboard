@@ -60,7 +60,12 @@ export default function PlayerProfile({ player }: PlayerProfileProps) {
                         <div className="flex items-center gap-3 px-5 py-3 rounded-xl bg-bg-card/50 border border-border-color backdrop-blur-md">
                             <div className="text-left">
                                 <p className="text-xs text-text-secondary uppercase font-bold tracking-wider">Peak Rank</p>
-                                <p className="text-lg font-bold text-accent-purple">{player.peak_rank}</p>
+                                <p className="text-lg font-bold text-accent-purple">
+                                    {player.peak_rank.split(' ')[0]}
+                                    <span className="text-xs text-text-muted ml-1 font-medium">
+                                        {player.peak_rank.split(' ').slice(1).join(' ')}
+                                    </span>
+                                </p>
                             </div>
                         </div>
                     </div>
