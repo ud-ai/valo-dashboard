@@ -103,7 +103,7 @@ function StatCard({ label, value, icon: Icon, trend, color }: any) {
     return (
         <motion.div
             whileHover={{ y: -5, transition: { duration: 0.3, ease: "easeOut" } }}
-            className="bg-bg-card/50 dark:bg-bg-secondary/30 backdrop-blur-md p-4 md:p-5 rounded-2xl border border-border-color dark:border-white/5 shadow-sm dark:shadow-none relative overflow-hidden group"
+            className="bg-bg-card/50 dark:bg-bg-secondary/80 backdrop-blur-md p-4 md:p-5 rounded-2xl border border-border-color dark:border-white/15 shadow-sm dark:shadow-lg relative overflow-hidden group"
         >
             {/* Tech Corners */}
             <div className="absolute top-0 left-0 w-3 h-3 border-t-2 border-l-2 border-white/10 group-hover:border-white/30 transition-colors rounded-tl-lg" />

@@ -7,7 +7,7 @@ interface PlayerProfileProps {
 
 export default function PlayerProfile({ player }: PlayerProfileProps) {
     return (
-        <div className="w-full bg-bg-card/50 dark:bg-bg-secondary/30 backdrop-blur-md rounded-2xl p-6 border border-border-color dark:border-white/5 shadow-sm dark:shadow-none relative overflow-hidden group hover:border-accent-red/20 dark:hover:border-white/10 transition-colors">
+        <div className="w-full bg-bg-card/50 dark:bg-bg-secondary/80 backdrop-blur-md rounded-2xl p-6 border border-border-color dark:border-white/15 shadow-sm dark:shadow-lg relative overflow-hidden group hover:border-accent-red/20 dark:hover:border-white/20 transition-colors">
             {/* Valorant Watermark */}
             <div className="absolute -top-10 -right-10 text-[150px] font-black text-white/5 leading-none select-none pointer-events-none z-0 tracking-tighter">
                 VALORANT

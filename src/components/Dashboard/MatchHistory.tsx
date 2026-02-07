@@ -17,6 +17,7 @@ export default function MatchHistory({ matches }: MatchHistoryProps) {
     const [filter, setFilter] = useState<FilterType>("all");
     const [searchQuery, setSearchQuery] = useState("");
     const [selectedMatch, setSelectedMatch] = useState<Match | null>(null);
+    const [isFilterOpen, setIsFilterOpen] = useState(false);
 
     const filteredMatches = matches.filter((match) => {
         // 1. Filter by Result
@@ -35,7 +36,7 @@ export default function MatchHistory({ matches }: MatchHistoryProps) {
 
     return (
         <div className="space-y-4">
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-bg-card/50 dark:bg-bg-secondary/20 p-4 rounded-xl border border-border-color dark:border-white/5 backdrop-blur-sm shadow-sm dark:shadow-none">
+            <div className="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-bg-card/50 dark:bg-bg-secondary/20 p-4 rounded-xl border border-border-color dark:border-white/5 backdrop-blur-sm shadow-sm dark:shadow-none">
                 <h2 className="text-xl font-bold text-text-primary dark:text-white flex items-center gap-2">
                     Latest Matches
                     <span className="text-xs px-2 py-1 bg-bg-secondary/50 dark:bg-white/10 rounded-full text-text-muted">{filteredMatches.length}</span>
@@ -55,32 +56,52 @@ export default function MatchHistory({ matches }: MatchHistoryProps) {
                     </div>
 
                     {/* Filter Dropdown */}
-                    <div className="relative min-w-[140px]">
+                    <div className="relative min-w-[140px] z-50">
                         <button
+                            onClick={() => setIsFilterOpen(!isFilterOpen)}
                             className="w-full flex items-center justify-between gap-2 bg-bg-primary/50 border border-border-color dark:border-white/10 rounded-lg px-4 py-2 text-sm text-text-primary dark:text-white hover:bg-bg-primary/70 transition-colors"
                         >
                             <span className="flex items-center gap-2">
                                 <Filter size={14} className="text-text-muted" />
                                 {filter === 'all' ? 'All Matches' : filter.charAt(0).toUpperCase() + filter.slice(1)}
                             </span>
-                            <ChevronDown size={14} className="text-text-muted" />
+                            <ChevronDown size={14} className={`text-text-muted transition-transform duration-200 ${isFilterOpen ? 'rotate-180' : ''}`} />
                         </button>
 
-                        {/* Simple custom select implementation */}
-                        <select
-                            value={filter}
-                            onChange={(e) => setFilter(e.target.value as FilterType)}
-                            className="absolute inset-0 opacity-0 cursor-pointer"
-                        >
-                            <option value="all">All Matches</option>
-                            <option value="won">Won Only</option>
-                            <option value="lost">Lost Only</option>
-                        </select>
+                        <AnimatePresence>
+                            {isFilterOpen && (
+                                <motion.div
+                                    initial={{ opacity: 0, y: 5 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    exit={{ opacity: 0, y: 5 }}
+                                    transition={{ duration: 0.2 }}
+                                    className="absolute top-full right-0 mt-2 w-full bg-bg-card dark:bg-bg-secondary border border-border-color dark:border-white/10 rounded-lg shadow-xl overflow-hidden"
+                                >
+                                    {['all', 'won', 'lost'].map((f) => (
+                                        <button
+                                            key={f}
+                                            className={cn(
+                                                "w-full text-left px-4 py-2 text-sm hover:bg-bg-primary/50 dark:hover:bg-white/5 transition-colors",
+                                                filter === f ? "text-accent-red font-bold" : "text-text-primary dark:text-text-secondary"
+                                            )}
+                                            onClick={() => {
+                                                setFilter(f as FilterType);
+                                                setIsFilterOpen(false);
+                                            }}
+                                        >
+                                            {f === 'all' ? 'All Matches' : f.charAt(0).toUpperCase() + f.slice(1)}
+                                        </button>
+                                    ))}
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
                     </div>
                 </div>
             </div>
 
-            <div className="space-y-3">
+
+
+            <div className={`space-y-3 transition-opacity duration-200 ${isFilterOpen ? 'pointer-events-none opacity-50' : 'opacity-100'}`}>
                 <AnimatePresence mode="popLayout">
                     {filteredMatches.map((match) => (
                         <motion.div
@@ -91,7 +112,7 @@ export default function MatchHistory({ matches }: MatchHistoryProps) {
                             exit={{ opacity: 0, scale: 0.95 }}
                             transition={{ duration: 0.4, ease: "easeOut" }}
                         >
-                            <MatchCard match={match} onClick={() => setSelectedMatch(match)} />
+                            <MatchCard match={match} onClick={() => !isFilterOpen && setSelectedMatch(match)} />
                         </motion.div>
                     ))}
                 </AnimatePresence>
@@ -108,13 +129,23 @@ export default function MatchHistory({ matches }: MatchHistoryProps) {
             </div>
 
             {/* Match Details Modal */}
-            {selectedMatch && (
-                <MatchDetails
-                    match={selectedMatch}
-                    isOpen={!!selectedMatch}
-                    onClose={() => setSelectedMatch(null)}
+            {
+                selectedMatch && (
+                    <MatchDetails
+                        match={selectedMatch}
+                        isOpen={!!selectedMatch}
+                        onClose={() => setSelectedMatch(null)}
+                    />
+                )
+            }
+
+            {/* Click outside handler & Backdrop for dropdown */}
+            {isFilterOpen && (
+                <div
+                    className="fixed inset-0 z-[5] bg-black/40"
+                    onClick={() => setIsFilterOpen(false)}
                 />
             )}
-        </div>
+        </div >
     );
 }

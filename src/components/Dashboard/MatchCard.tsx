@@ -19,7 +19,7 @@ export default function MatchCard({ match, onClick }: MatchCardProps) {
             onClick={onClick}
             className={cn(
                 "group relative overflow-hidden rounded-xl transition-all duration-300 hover:scale-[1.005] hover:shadow-xl cursor-pointer",
-                "bg-bg-card border border-border-color dark:border-white/5 shadow-sm hover:shadow-md",
+                "bg-bg-card border border-border-color dark:border-white/15 dark:bg-bg-card/40 shadow-sm hover:shadow-md",
                 isWin ? "hover:border-accent-cyan/50" : isLoss ? "hover:border-accent-red/50" : "hover:border-text-muted/50"
             )}
         >
