@@ -1,36 +1,64 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# ValoDashboard - Frontend Intern Assessment
 
-## Getting Started
+A modern, high-performance Valorant player dashboard built with Next.js, Tailwind CSS, and Framer Motion. This dashboard visualizes player statistics, match history, and performance metrics with a premium, game-inspired aesthetic.
 
-First, run the development server:
+## 🚀 Setup Instructions
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+1.  **Prerequisites:** Ensure you have Node.js (v18+) installed.
+2.  **Install Dependencies:**
+    ```bash
+    npm install
+    ```
+3.  **Run Development Server:**
+    ```bash
+    npm run dev
+    ```
+4.  **Build for Production:**
+    ```bash
+    npm run build
+    npm start
+    ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## ✨ Features Implemented
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+*   **Responsive Player Profile:** Dynamic header displaying rank, level, and key player stats, optimized for all devices.
+*   **Match History:**
+    *   Filterable list (All/Won/Lost).
+    *   Search functionality by Map or Agent.
+    *   Smooth animations for list transitions.
+*   **Detailed Match Stats (Modal):**
+    *   Comprehensive breakdown of each match (K/D/A, HS%, ADR).
+    *   **Body Hit Visualization:** Custom SVG component showing hit accuracy (Head/Body/Legs) with a tactical scanline animation and hover effects.
+    *   **Dynamic Backgrounds:** Fetches and displays correct map loading screens via the Valorant API.
+*   **Data Visualization:**
+    *   Interactive charts for performance trends (K/D over time).
+    *   Map-specific win rate analysis.
+*   **Premium UI/UX:**
+    *   Glassmorphism design language.
+    *   Micro-interactions and hover effects using Framer Motion.
+    *   Fully responsive layout (Mobile, Tablet, Desktop).
 
-## Learn More
+## 🛠 Challenges & Solutions
 
-To learn more about Next.js, take a look at the following resources:
+1.  **Map Data Consistency:**
+    *   *Challenge:* The provided/initial map list was missing newer maps like "Corrode" and had incorrect UUIDs for others, causing background images to fail.
+    *   *Solution:* Integrated the official `valorant-api.com` endpoints to fetch the correct, up-to-date Map UUIDs, ensuring 100% asset coverage.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+2.  **Image Performance:**
+    *   *Challenge:* High-quality map backgrounds caused layout shifts and slow LCP (Largest Contentful Paint).
+    *   *Solution:* Implemented `next/image` with the `priority` flag and optimized domain configuration to serve responsive, cached images.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+3.  **Complex Hit Visualization:**
+    *   *Challenge:* Representing hit accuracy visually instead of just text format required a custom graphical solution.
+    *   *Solution:* Created a bespoke SVG component (`BodyHitChart`) with vector paths for a tactical dummy, overlaying dynamic gradients based on hit percentage.
 
-## Deploy on Vercel
+## ⏱ Time Spent
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+**Total Time:** Approximately 16 hours.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+*   *Initial Setup & Data Parsing:* 2 hours
+*   *Core UI Implementation (Profile, Stats, History):* 6 hours
+*   *Advanced Features (Match Details, Charts, Body Viz):* 5 hours
+*   *Refinement (Responsiveness, Animations, Polish):* 3 hours

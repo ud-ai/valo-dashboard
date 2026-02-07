@@ -18,16 +18,20 @@
 }
 
 .dark {
-  /* Dark Mode */
-  --background: #0f0f1a;
-  --foreground: #ffffff;
-  --bg-primary: #0f0f1a;
-  --bg-secondary: #1a1a2e;
-  --bg-card: #16162a;
-  --text-primary: #ffffff;
-  --text-secondary: #a0a0b8;
-  --text-muted: #6b6b80;
-  --border-color: #2a2a45;
+  /* Dark Mode - Valorant Inspired */
+  --background: #0f1923;
+  /* Valorant Main Dark */
+  --foreground: #ece8e1;
+  /* Valorant Off-White */
+  --bg-primary: #0f1923;
+  --bg-secondary: #1c252e;
+  /* Slightly lighter for cards */
+  --bg-card: #1f2b38;
+  --text-primary: #ece8e1;
+  --text-secondary: #8b978f;
+  /* Muted Green/Grey */
+  --text-muted: #676e75;
+  --border-color: #38424d;
 }
 
 @theme {
@@ -41,16 +45,22 @@ body {
   color: var(--text-primary);
   font-family: var(--font-inter);
   overflow-x: hidden;
-  transition: background-color 0.3s, color 0.3s;
+  transition: background-color 0.5s ease-in-out, color 0.5s ease-in-out;
+  background-color: var(--bg-primary);
   background-image:
-    radial-gradient(circle at 10% 20%, rgba(148, 163, 184, 0.1) 0%, transparent 20%),
-    radial-gradient(circle at 90% 80%, rgba(148, 163, 184, 0.1) 0%, transparent 20%);
+    linear-gradient(rgba(255, 70, 85, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 70, 85, 0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
 }
 
 .dark body {
+  background-color: #0f1923;
+  /* Valorant Deep Blue */
   background-image:
-    radial-gradient(circle at 15% 50%, rgba(114, 9, 183, 0.08), transparent 25%),
-    radial-gradient(circle at 85% 30%, rgba(67, 97, 238, 0.08), transparent 25%);
+    radial-gradient(circle at 50% 0%, rgba(255, 70, 85, 0.08), transparent 70%),
+    linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+  background-size: 100% 100%, 60px 60px, 60px 60px;
 }
 
 /* Custom Scrollbar */

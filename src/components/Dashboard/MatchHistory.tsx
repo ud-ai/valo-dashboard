@@ -35,10 +35,10 @@ export default function MatchHistory({ matches }: MatchHistoryProps) {
 
     return (
         <div className="space-y-4">
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-bg-secondary/20 p-4 rounded-xl border border-white/5 backdrop-blur-sm">
-                <h2 className="text-xl font-bold text-white flex items-center gap-2">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-bg-card/50 dark:bg-bg-secondary/20 p-4 rounded-xl border border-border-color dark:border-white/5 backdrop-blur-sm shadow-sm dark:shadow-none">
+                <h2 className="text-xl font-bold text-text-primary dark:text-white flex items-center gap-2">
                     Latest Matches
-                    <span className="text-xs px-2 py-1 bg-white/10 rounded-full text-text-muted">{filteredMatches.length}</span>
+                    <span className="text-xs px-2 py-1 bg-bg-secondary/50 dark:bg-white/10 rounded-full text-text-muted">{filteredMatches.length}</span>
                 </h2>
 
                 <div className="flex flex-col sm:flex-row flex-1 w-full md:w-auto gap-3">
@@ -50,14 +50,14 @@ export default function MatchHistory({ matches }: MatchHistoryProps) {
                             placeholder="Search Agent, Map..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full bg-bg-primary/50 border border-white/10 rounded-lg pl-10 pr-4 py-2 text-sm text-white focus:outline-none focus:border-accent-cyan/50 transition-colors"
+                            className="w-full bg-bg-primary/50 border border-border-color dark:border-white/10 rounded-lg pl-10 pr-4 py-2 text-sm text-text-primary dark:text-white focus:outline-none focus:border-accent-cyan/50 transition-colors placeholder:text-text-muted"
                         />
                     </div>
 
                     {/* Filter Dropdown */}
                     <div className="relative min-w-[140px]">
                         <button
-                            className="w-full flex items-center justify-between gap-2 bg-bg-primary/50 border border-white/10 rounded-lg px-4 py-2 text-sm text-white hover:bg-bg-primary/70 transition-colors"
+                            className="w-full flex items-center justify-between gap-2 bg-bg-primary/50 border border-border-color dark:border-white/10 rounded-lg px-4 py-2 text-sm text-text-primary dark:text-white hover:bg-bg-primary/70 transition-colors"
                         >
                             <span className="flex items-center gap-2">
                                 <Filter size={14} className="text-text-muted" />
@@ -89,7 +89,7 @@ export default function MatchHistory({ matches }: MatchHistoryProps) {
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
                             exit={{ opacity: 0, scale: 0.95 }}
-                            transition={{ duration: 0.3 }}
+                            transition={{ duration: 0.4, ease: "easeOut" }}
                         >
                             <MatchCard match={match} onClick={() => setSelectedMatch(match)} />
                         </motion.div>

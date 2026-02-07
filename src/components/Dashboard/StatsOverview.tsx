@@ -68,7 +68,7 @@ export default function StatsOverview({ player, matches }: StatsOverviewProps) {
             {/* Charts Section */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6 mt-6">
                 <div className="bg-bg-secondary/20 p-4 md:p-6 rounded-2xl border border-white/5 backdrop-blur-sm">
-                    <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                    <h3 className="text-lg font-bold text-text-primary mb-4 flex items-center gap-2">
                         <TrendingUp size={20} className="text-accent-cyan" />
                         Performance Trend
                     </h3>
@@ -102,25 +102,31 @@ export default function StatsOverview({ player, matches }: StatsOverviewProps) {
 function StatCard({ label, value, icon: Icon, trend, color }: any) {
     return (
         <motion.div
-            whileHover={{ y: -5 }}
-            className="bg-bg-secondary/30 backdrop-blur-md p-4 md:p-5 rounded-2xl border border-white/5 relative overflow-hidden group"
+            whileHover={{ y: -5, transition: { duration: 0.3, ease: "easeOut" } }}
+            className="bg-bg-card/50 dark:bg-bg-secondary/30 backdrop-blur-md p-4 md:p-5 rounded-2xl border border-border-color dark:border-white/5 shadow-sm dark:shadow-none relative overflow-hidden group"
         >
+            {/* Tech Corners */}
+            <div className="absolute top-0 left-0 w-3 h-3 border-t-2 border-l-2 border-white/10 group-hover:border-white/30 transition-colors rounded-tl-lg" />
+            <div className="absolute top-0 right-0 w-3 h-3 border-t-2 border-r-2 border-white/10 group-hover:border-white/30 transition-colors rounded-tr-lg" />
+            <div className="absolute bottom-0 left-0 w-3 h-3 border-b-2 border-l-2 border-white/10 group-hover:border-white/30 transition-colors rounded-bl-lg" />
+            <div className="absolute bottom-0 right-0 w-3 h-3 border-b-2 border-r-2 border-white/10 group-hover:border-white/30 transition-colors rounded-br-lg" />
+
             <div className={`absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity ${color}`}>
                 <Icon size={48} />
             </div>
 
             <div className="relative z-10">
                 <div className="flex justify-between items-start mb-2">
-                    <div className={`p-2 rounded-lg bg-white/5 ${color}`}>
+                    <div className={`p-2 rounded-lg bg-bg-primary/50 ${color.replace('text-', 'bg-').replace('-400', '-400/10').replace('accent-', 'accent-').replace('cyan', 'cyan/10').replace('red', 'red/10').replace('purple', 'purple/10').replace('yellow', 'yellow-400/10')} `}>
                         <Icon size={20} />
                     </div>
-                    <span className={`text-xs font-bold px-2 py-1 rounded-full bg-white/5 ${trend.startsWith('+') ? 'text-green-400' : 'text-red-400'}`}>
+                    <span className={`text-xs font-bold px-2 py-1 rounded-full bg-bg-primary/50 ${trend.startsWith('+') ? 'text-green-500' : 'text-red-500'}`}>
                         {trend}
                     </span>
                 </div>
 
                 <p className="text-text-secondary text-xs uppercase font-bold tracking-wider mb-1">{label}</p>
-                <h3 className="text-2xl md:text-3xl font-black text-white tracking-tight">{value}</h3>
+                <h3 className="text-2xl md:text-3xl font-black text-text-primary tracking-tight">{value}</h3>
             </div>
         </motion.div>
     )

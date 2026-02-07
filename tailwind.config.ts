@@ -37,7 +37,8 @@ const config: Config = {
                 }
             },
             animation: {
-                scanline: 'scanline 3s linear infinite',
+                scanline: 'scanline 4s linear infinite',
+                float: 'float 6s ease-in-out infinite',
             }
         },
     },

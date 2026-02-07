@@ -62,14 +62,17 @@ export default function MapPerformanceChart({ matches }: MapPerformanceChartProp
                         <XAxis
                             dataKey="name"
                             stroke="var(--text-secondary)"
+                            tick={{ fill: 'var(--text-secondary)' }}
                             fontSize={12}
                             tickLine={false}
                             axisLine={false}
+                            interval={0} // Force show all labels
                         />
                         <YAxis
                             yAxisId="left"
                             orientation="left"
                             stroke="var(--text-secondary)"
+                            tick={{ fill: 'var(--text-secondary)' }}
                             fontSize={12}
                             tickLine={false}
                             axisLine={false}
@@ -79,6 +82,7 @@ export default function MapPerformanceChart({ matches }: MapPerformanceChartProp
                             yAxisId="right"
                             orientation="right"
                             stroke="var(--text-secondary)"
+                            tick={{ fill: 'var(--text-secondary)' }}
                             fontSize={12}
                             tickLine={false}
                             axisLine={false}

@@ -10,10 +10,7 @@ const player = playerData as unknown as Player;
 export default function Home() {
   return (
     <div className="container mx-auto px-4 py-8 md:py-12 max-w-5xl">
-      <header className="mb-8 text-center md:text-left">
-        <div className="inline-block bg-gradient-1 px-4 py-1 rounded-full text-xs font-bold uppercase tracking-widest mb-4 animate-pulse text-white">
-          Frontend Intern Assignment
-        </div>
+      <header className="mb-0">
       </header>
 
       <main className="space-y-8">
