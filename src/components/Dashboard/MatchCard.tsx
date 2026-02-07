@@ -17,7 +17,7 @@ export default function MatchCard({ match }: MatchCardProps) {
         <div
             className={cn(
                 "group relative overflow-hidden rounded-xl transition-all duration-300 hover:scale-[1.005] hover:shadow-xl",
-                "bg-bg-card border border-white/5 hover:border-white/10"
+                "bg-bg-card border border-border-color hover:border-accent-purple/20"
             )}
         >
             {/* Colorful Side Indicator */}
@@ -36,13 +36,13 @@ export default function MatchCard({ match }: MatchCardProps) {
                 {/* Map & Agent Info */}
                 <div className="flex items-center gap-4 min-w-[180px]">
                     <div className={cn(
-                        "w-12 h-12 rounded-xl flex items-center justify-center text-xl font-black border border-white/5",
+                        "w-12 h-12 rounded-xl flex items-center justify-center text-xl font-black border border-border-color",
                         isWin ? "bg-accent-cyan/10 text-accent-cyan" : isLoss ? "bg-accent-red/10 text-accent-red" : "bg-bg-secondary text-text-muted"
                     )}>
                         {match.result[0]}
                     </div>
                     <div>
-                        <h3 className="font-bold text-white text-lg tracking-tight">{match.map}</h3>
+                        <h3 className="font-bold text-text-primary text-lg tracking-tight">{match.map}</h3>
                         <p className="text-xs font-semibold text-text-secondary uppercase tracking-wider">{match.agent}</p>
                     </div>
                 </div>
@@ -55,8 +55,8 @@ export default function MatchCard({ match }: MatchCardProps) {
                         <span className="text-[10px] text-text-secondary font-bold uppercase tracking-wider mb-1 flex items-center gap-1">
                             <Sword size={10} /> K / D / A
                         </span>
-                        <span className="font-mono text-white text-base font-medium">
-                            {match.kills} <span className="text-text-muted">/</span> <span className={cn(isLoss ? "text-accent-red" : "text-white")}>{match.deaths}</span> <span className="text-text-muted">/</span> {match.assists}
+                        <span className="font-mono text-text-primary text-base font-medium">
+                            {match.kills} <span className="text-text-muted">/</span> <span className={cn(isLoss ? "text-accent-red" : "text-text-primary")}>{match.deaths}</span> <span className="text-text-muted">/</span> {match.assists}
                         </span>
                     </div>
 
@@ -68,7 +68,7 @@ export default function MatchCard({ match }: MatchCardProps) {
                         <div className="flex items-center gap-2">
                             <span className={cn(
                                 "font-mono font-bold text-lg",
-                                match.kd_ratio >= 1.2 ? "text-accent-cyan" : match.kd_ratio < 0.8 ? "text-accent-red" : "text-white"
+                                match.kd_ratio >= 1.2 ? "text-accent-cyan" : match.kd_ratio < 0.8 ? "text-accent-red" : "text-text-primary"
                             )}>
                                 {match.kd_ratio}
                             </span>
@@ -86,7 +86,7 @@ export default function MatchCard({ match }: MatchCardProps) {
                         <span className="text-[10px] text-text-secondary font-bold uppercase tracking-wider mb-1 flex items-center gap-1">
                             <Skull size={10} /> HS%
                         </span>
-                        <span className={cn("font-mono font-medium text-base", match.headshot_percentage > 25 ? "text-accent-purple" : "text-white")}>
+                        <span className={cn("font-mono font-medium text-base", match.headshot_percentage > 25 ? "text-accent-purple" : "text-text-primary")}>
                             {match.headshot_percentage}%
                         </span>
                     </div>
