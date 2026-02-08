@@ -29,11 +29,22 @@ const MAP_UUIDS: Record<string, string> = {
 
 export default function MatchDetails({ match, isOpen, onClose }: MatchDetailsProps) {
     const [mounted, setMounted] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
         setMounted(true);
         return () => setMounted(false);
     }, []);
+
+    useEffect(() => {
+        if (isOpen && match) {
+            setIsLoading(true);
+            const timer = setTimeout(() => setIsLoading(false), 1200);
+            return () => clearTimeout(timer);
+        }
+    }, [isOpen, match?.match_id]);
+
+
 
     // Lock body scroll when modal is open
     useEffect(() => {
@@ -68,40 +79,71 @@ export default function MatchDetails({ match, isOpen, onClose }: MatchDetailsPro
                         initial={{ opacity: 0, scale: 0.9, y: 30 }}
                         animate={{ opacity: 1, scale: 1, y: 0 }}
                         exit={{ opacity: 0, scale: 0.9, y: 30 }}
-                        transition={{ type: "spring", stiffness: 260, damping: 20 }}
-                        className="relative w-full max-w-2xl bg-bg-card border border-white/10 rounded-2xl shadow-2xl overflow-hidden max-h-[90vh] overflow-y-auto"
+                        transition={{ duration: 0.4, ease: "easeOut" }}
+                        className="relative w-full max-w-2xl tactical-frame shadow-2xl overflow-hidden max-h-[90vh] overflow-y-auto"
                     >
 
+
                         {/* Header */}
-                        <div className="relative h-32 bg-gradient-to-r from-bg-secondary to-bg-primary overflow-hidden">
-                            <div className="absolute inset-0 bg-gradient-to-r from-black/40 to-transparent z-10" />
+                        <div className="relative h-40 bg-bg-secondary overflow-hidden">
+                            <div className="absolute inset-0 bg-gradient-to-t from-bg-primary via-transparent to-transparent z-10" />
                             {/* Map Image Background with Dynamic UUID */}
                             <div className="absolute inset-0 z-0">
                                 <Image
                                     src={`https://media.valorant-api.com/maps/${mapId}/splash.png`}
                                     alt={match.map}
                                     fill
-                                    className="object-cover opacity-60 transition-transform duration-700 hover:scale-105"
+                                    className="object-cover opacity-40 grayscale hover:grayscale-0 transition-all duration-700"
                                     priority
                                 />
                             </div>
 
-                            <button onClick={onClose} className="absolute top-4 right-4 z-20 p-2 bg-black/20 hover:bg-black/40 rounded-full text-white transition-colors cursor-pointer">
+                            <button onClick={onClose} className="absolute top-4 right-4 z-20 p-2 bg-black/40 hover:bg-accent-red rounded-full text-white transition-colors cursor-pointer">
                                 <X size={20} />
                             </button>
 
-                            <div className="absolute bottom-6 left-8 z-20 flex items-end gap-4">
-                                <div className={`text-4xl font-black ${match.result === 'Won' ? 'text-accent-cyan' : match.result === 'Lost' ? 'text-accent-red' : 'text-text-primary'}`}>
-                                    {match.result.toUpperCase()}
-                                </div>
-                                <div className="text-white/60 font-bold text-lg mb-1">
-                                    {match.map} • {match.agent}
+                            <div className="absolute bottom-6 left-8 z-20">
+                                <div className="text-[10px] font-mono text-accent-red font-black uppercase tracking-[0.4em] mb-2 opacity-80">/// Mission Protocol</div>
+                                <div className="flex items-end gap-6">
+                                    <div className={`text-5xl font-black italic tracking-tighter ${match.result === 'Won' ? 'text-accent-green' : 'text-accent-red'}`}>
+                                        {match.result.toUpperCase()}
+                                    </div>
+                                    <div className="text-text-primary font-black text-xl mb-1 uppercase tracking-tight">
+                                        {match.map} <span className="text-text-primary/40 mx-2">|</span> {match.agent}
+                                    </div>
+
                                 </div>
                             </div>
                         </div>
 
+
+                        {/* Content Overlay / Loading State */}
+                        <AnimatePresence>
+                            {isLoading && (
+                                <motion.div
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    exit={{ opacity: 0 }}
+                                    className="absolute inset-0 z-40 bg-bg-primary/90 backdrop-blur-md flex flex-col items-center justify-center space-y-4"
+                                >
+                                    <div className="relative w-64 h-1 bg-white/10 overflow-hidden">
+                                        <motion.div
+                                            initial={{ x: "-100%" }}
+                                            animate={{ x: "100%" }}
+                                            transition={{ repeat: Infinity, duration: 1.5, ease: "linear" }}
+                                            className="absolute inset-0 bg-accent-red shadow-[0_0_10px_#ff4655]"
+                                        />
+                                    </div>
+                                    <div className="text-[10px] font-mono text-accent-red animate-pulse tracking-[0.5em] uppercase">
+                                        /// Decoding_Match_Data_V3 ///
+                                    </div>
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
+
                         {/* Content */}
-                        <div className="p-4 md:p-8 space-y-6 md:space-y-8">
+                        <div className={`p-4 md:p-8 space-y-6 md:space-y-8 transition-all duration-500 ${isLoading ? 'blur-xl scale-110' : 'blur-0 scale-100'}`}>
+
                             {/* Key Stats Row */}
                             <motion.div
                                 initial="hidden"
@@ -185,16 +227,17 @@ function StatBox({ label, value, icon: Icon, color }: any) {
                 visible: { opacity: 1, scale: 1 }
             }}
             whileHover={{ y: -5, backgroundColor: "rgba(255, 255, 255, 0.05)" }}
-            className="bg-bg-secondary/30 p-4 rounded-xl border border-white/5 transition-colors cursor-default"
+            className="tactical-frame p-4 transition-colors cursor-default"
         >
             <div className={`flex items-center gap-2 mb-2 ${color} opacity-80`}>
-                <Icon size={16} />
-                <span className="text-xs font-bold uppercase tracking-wider">{label}</span>
+                <Icon size={14} />
+                <span className="text-[10px] font-black uppercase tracking-widest">{label}</span>
             </div>
-            <div className={`text-2xl font-black ${color}`}>{value}</div>
+            <div className={`text-2xl font-black italic tracking-tighter ${color}`}>{value}</div>
         </motion.div>
     )
 }
+
 
 
 

@@ -45,6 +45,7 @@ export const MAP_UUIDS: Record<string, string> = {
     "Icebox": "e2ad5c54-4114-a870-9641-8ea21279579a",
     "Haven": "2bee0dc9-4ffe-519b-1cbd-7fbe763a6047",
     "Abyss": "224b0a95-48b9-f703-1bd8-67aca101a61f",
+    "Corrode": "1c18ab1f-420d-0d8b-71d0-77ad3c439115",
     "The Range": "ee613ee9-28b7-4beb-9666-08db13bb2244",
     "District": "690b3ed2-4dff-945b-8223-6da834e30d24",
     "Kasbah": "12452a9d-48c3-0b02-e7eb-0381c3520404",
@@ -119,5 +120,10 @@ export const getRankImageUrl = (rank: string): string => {
 
     if (tier === 0) return "";
 
+    // Use custom asset for Immortal/Radiant if available
+    if (r.includes("immortal") || r.includes("radiant")) return "/ranks/immortal_rank.png";
+
+
     return `https://media.valorant-api.com/competitivetiers/${TIER_UUID}/${tier}/largeicon.png`;
 };
+

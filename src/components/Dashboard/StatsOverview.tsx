@@ -32,27 +32,39 @@ export default function StatsOverview({ player, matches }: StatsOverviewProps) {
                 {stats.map((stat, index) => (
                     <motion.div
                         key={stat.label}
-                        whileHover={{ y: -2 }}
-                        className="bg-bg-card border border-border-color/10 p-4 group"
+                        whileHover={{ y: -4, scale: 1.02 }}
+                        className="tactical-frame p-4 md:p-5 group flex flex-col items-center justify-center text-center cursor-default min-h-[90px] md:min-h-[100px]"
+
                     >
-                        <div className="text-2xl font-black text-text-primary mb-1 group-hover:text-accent-red transition-colors">
+                        <div className="absolute top-0 right-0 w-8 h-8 opacity-10">
+                            <stat.icon size={32} />
+                        </div>
+                        <div className="text-2xl md:text-3xl font-black text-text-primary mb-1 group-hover:text-accent-red transition-colors tracking-tight italic">
                             {stat.value}
                         </div>
-                        <div className={`text-[10px] font-mono uppercase tracking-widest ${stat.color} flex items-center gap-2 opacity-60`}>
-                            <stat.icon size={12} />
+
+
+                        <div className={`text-[9px] font-black uppercase tracking-[0.2em] ${stat.color} opacity-80 mt-1`}>
                             {stat.label}
                         </div>
                     </motion.div>
                 ))}
+
             </div>
 
             {/* Map Performance Micro-Chart */}
-            <div className="flex-1 bg-bg-card border border-border-color/10 p-6 relative overflow-hidden flex flex-col">
-                <div className="text-[10px] font-mono text-text-muted mb-6 uppercase tracking-widest">Map Win Rate Analysis</div>
-                <div className="flex-1 w-full min-h-[200px]">
+            <div className="flex-1 tactical-frame p-4 md:p-8 relative overflow-hidden flex flex-col">
+
+                <div className="absolute inset-0 tech-grid opacity-10 pointer-events-none" />
+                <div className="text-[10px] font-black text-accent-red mb-8 uppercase tracking-[0.3em] flex items-center gap-3">
+                    <span className="w-4 h-[1px] bg-accent-red" />
+                    Map Performance Data ///
+                </div>
+                <div className="flex-1 w-full min-h-[200px] relative z-10">
                     <MapPerformanceChart matches={matches} />
                 </div>
             </div>
+
         </div>
     );
 }

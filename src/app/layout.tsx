@@ -23,17 +23,16 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${inter.variable} antialiased min-h-screen font-sans bg-bg-primary text-text-primary transition-colors duration-300`}
+        className={`${inter.variable} antialiased min-h-screen font-sans bg-bg-primary text-text-primary`}
       >
+
         <ThemeProvider
           attribute="class"
           defaultTheme="dark"
           enableSystem
           disableTransitionOnChange
         >
-          <div className="absolute top-4 right-4 z-50">
-            <ThemeToggle />
-          </div>
+
           <div className="absolute top-0 w-full h-[600px] bg-gradient-to-b from-bg-secondary/20 via-accent-red/5 to-transparent pointer-events-none -z-10" />
           {children}
         </ThemeProvider>

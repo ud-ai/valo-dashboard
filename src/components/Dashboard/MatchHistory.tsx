@@ -39,23 +39,34 @@ function MatchItem({ match, index, onClick }: { match: Match; index: number; onC
     const isWin = match.result === "Won";
     return (
         <motion.div
-            initial={{ y: 20, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
             transition={{
-                type: "spring",
-                stiffness: 100,
-                damping: 15,
-                delay: index * 0.03
+                duration: 0.3,
+                delay: Math.min(index * 0.02, 0.4),
+                ease: "easeOut"
             }}
-            whileHover={{
-                scale: 1.01,
-                backgroundColor: "rgba(255, 255, 255, 0.03)",
-                transition: { duration: 0.2 }
-            }}
-            whileTap={{ scale: 0.99 }}
+            whileHover={{ backgroundColor: "rgba(255, 255, 255, 0.04)" }}
+            whileTap={{ scale: 0.98 }}
             onClick={onClick}
-            className="group relative flex items-center gap-6 p-4 border-b border-border-color/10 cursor-pointer overflow-hidden"
+            className="group relative flex items-center gap-4 md:gap-6 p-4 md:p-5 border-b border-white/5 cursor-pointer overflow-hidden transition-colors"
         >
+            {/* Map Splash Background */}
+            <div className="absolute inset-0 z-0 opacity-10 group-hover:opacity-20 transition-opacity duration-500">
+                <Image
+                    src={getMapImageUrl(match.map)}
+                    alt={match.map}
+                    fill
+                    className="object-cover pointer-events-none"
+                    quality={50}
+                />
+                <div className="absolute inset-0 bg-gradient-to-r from-bg-primary via-bg-primary/60 to-transparent" />
+            </div>
+
+            <div className="absolute inset-0 tech-grid opacity-0 group-hover:opacity-10 transition-opacity z-[1]" />
+
+
+
             {/* Hover Glow Effect */}
             <div className="absolute inset-0 bg-gradient-to-r from-accent-red/0 via-accent-red/[0.03] to-accent-red/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
 
@@ -66,23 +77,27 @@ function MatchItem({ match, index, onClick }: { match: Match; index: number; onC
             )} />
 
             {/* Agent Icon */}
-            <div className="relative w-12 h-12 bg-bg-card border border-border-color/10 shrink-0 z-10 group-hover:border-accent-red/30 transition-colors">
+            <div className="relative w-14 h-14 bg-white/5 border border-white/10 shrink-0 z-10 group-hover:border-accent-red/50 transition-colors clip-path-slant">
                 <Image
                     src={getAgentImageUrl(match.agent)}
                     alt={match.agent}
                     fill
-                    className="object-cover group-hover:scale-110 transition-transform duration-500"
+                    className="object-cover group-hover:scale-110 transition-transform duration-500 brightness-90 group-hover:brightness-110"
                 />
             </div>
+
 
             {/* Match Info */}
             <div className="flex-1 grid grid-cols-2 md:grid-cols-4 items-center gap-4 z-10">
                 <div>
-                    <h3 className="text-xl font-bold text-text-primary uppercase tracking-tight group-hover:text-accent-red transition-colors">
+                    <h3 className="text-xl md:text-2xl font-black text-text-primary uppercase italic tracking-tighter group-hover:text-accent-red transition-colors leading-none">
                         {match.map}
                     </h3>
-                    <div className="text-[10px] font-mono text-text-muted uppercase tracking-widest">{match.agent}</div>
+
+
+                    <div className="text-[9px] font-mono text-accent-red font-bold uppercase tracking-[0.2em] mt-1 opacity-60">/// {match.agent}</div>
                 </div>
+
 
                 <div className="hidden md:block">
                     <div className="text-[10px] font-mono text-text-muted uppercase tracking-widest mb-1">Result</div>
@@ -219,7 +234,8 @@ export default function MatchHistory({ matches, onMatchClick }: MatchHistoryProp
                 </div>
             </div>
 
-            <div className="bg-bg-card border border-border-color/10 overflow-hidden">
+            <div className="tactical-frame overflow-hidden">
+
                 {isLoading ? (
                     <MatchHistorySkeleton />
                 ) : filteredMatches.length > 0 ? (

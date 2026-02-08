@@ -45,20 +45,26 @@ export default function MapPerformanceChart({ matches }: MapPerformanceChartProp
     }, [matches]);
 
     return (
-        <div className="bg-bg-card border border-border-color rounded-xl p-6 shadow-lg">
-            <h3 className="text-xl font-bold mb-6 text-text-primary">Map Performance</h3>
+        <div className="tactical-frame p-8 shadow-2xl relative overflow-hidden group">
+            <div className="absolute inset-0 tech-grid opacity-10 pointer-events-none" />
+            <h3 className="text-xs font-black mb-8 text-accent-red uppercase tracking-[0.4em] flex items-center gap-3">
+                <span className="w-4 h-[1px] bg-accent-red" />
+                Strategic Map Analysis ///
+            </h3>
+
             <div className="h-[300px] w-full">
                 <ResponsiveContainer width="100%" height="100%">
                     <BarChart
                         data={data}
                         margin={{
                             top: 5,
-                            right: 30,
-                            left: 0,
+                            right: 0,
+                            left: -20,
                             bottom: 5,
                         }}
                     >
-                        <CartesianGrid strokeDasharray="3 3" stroke="var(--border-color)" opacity={0.3} />
+                        <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
+
                         <XAxis
                             dataKey="name"
                             stroke="var(--text-secondary)"
@@ -98,8 +104,9 @@ export default function MapPerformanceChart({ matches }: MapPerformanceChartProp
                             cursor={{ fill: 'var(--bg-secondary)', opacity: 0.4 }}
                         />
                         <Legend wrapperStyle={{ paddingTop: '20px' }} />
-                        <Bar yAxisId="left" dataKey="winRate" name="Win Rate %" fill="#00d4aa" radius={[4, 4, 0, 0]} maxBarSize={50} />
-                        <Bar yAxisId="right" dataKey="kdRatio" name="K/D Ratio" fill="#ff4655" radius={[4, 4, 0, 0]} maxBarSize={50} />
+                        <Bar yAxisId="left" dataKey="winRate" name="Win Rate %" fill="var(--accent-green)" radius={[2, 2, 0, 0]} maxBarSize={40} />
+                        <Bar yAxisId="right" dataKey="kdRatio" name="K/D Ratio" fill="var(--accent-red)" radius={[2, 2, 0, 0]} maxBarSize={40} />
+
                     </BarChart>
                 </ResponsiveContainer>
             </div>

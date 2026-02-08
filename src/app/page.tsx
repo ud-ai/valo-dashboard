@@ -9,6 +9,8 @@ import MatchDetails from "@/components/Dashboard/MatchDetails";
 import { Player, Match } from "@/types";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
+import { ThemeToggle } from "@/components/ThemeToggle";
+
 
 // Map UUIDs for background images
 const MAP_UUIDS: Record<string, string> = {
@@ -23,7 +25,9 @@ const MAP_UUIDS: Record<string, string> = {
   "Split": "d960549e-485c-e861-8d71-aa9d1aed12a2",
   "Sunset": "92584fbe-486a-b1b2-9faa-39b0f486b498",
   "Abyss": "224b0a95-48b9-f703-1bd8-67aca101a61f",
+  "Corrode": "1c18ab1f-420d-0d8b-71d0-77ad3c439115",
 };
+
 
 // Type assertion for the imported JSON data
 const player = playerData as unknown as Player;
@@ -34,7 +38,16 @@ export default function Home() {
   const mapId = selectedMatch ? MAP_UUIDS[selectedMatch.map] : null;
 
   return (
-    <div className="relative min-h-screen w-full overflow-hidden bg-bg-primary text-text-primary selection:bg-accent-red selection:text-white transition-colors duration-500">
+    <div className="relative min-h-screen w-full overflow-hidden bg-bg-primary text-text-primary selection:bg-accent-red selection:text-white transition-colors duration-500 font-sans">
+
+      {/* TACTICAL HEADER */}
+      <header className="relative z-50 flex justify-end px-6 md:px-12 py-6">
+        <ThemeToggle />
+      </header>
+
+
+
+
 
       {/* IMMERSIVE BACKGROUND */}
       <AnimatePresence>
@@ -57,8 +70,18 @@ export default function Home() {
         )}
       </AnimatePresence>
 
-      <main className="relative z-10 p-4 md:p-8 w-full max-w-7xl mx-auto space-y-12">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      <main className="relative z-10 p-4 md:p-8 lg:p-12 w-full max-w-7xl mx-auto space-y-8 md:space-y-12">
+
+
+        {/* TACTICAL OVERLAY FRAME (From Image) */}
+        <div className="absolute inset-0 pointer-events-none z-0">
+          <div className="sticky top-20 left-0 right-0 h-[80vh] border-x border-t border-accent-red/20 mx-4 lg:mx-12 rounded-t-[40px] opacity-40" />
+          <div className="absolute top-[10%] left-[-5%] w-[400px] h-full bg-accent-red/5 blur-[120px] rounded-full" />
+          <div className="absolute top-[20%] right-[-5%] w-[400px] h-full bg-accent-cyan/5 blur-[120px] rounded-full" />
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start relative z-10">
+
           {/* PROFILE SECTION */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}

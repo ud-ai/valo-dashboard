@@ -36,9 +36,10 @@ export default function BodyHitChart({ head, body, legs }: BodyHitChartProps) {
                 </defs>
 
                 {/* Base Silhouette (Ghost) */}
-                <path d={headPath} className="fill-white/5 stroke-white/10 stroke-1" />
-                <path d={torsoPath} className="fill-white/5 stroke-white/10 stroke-1" />
-                <path d={legsPath} className="fill-white/5 stroke-white/10 stroke-1" />
+                <path d={headPath} className="fill-text-primary/5 stroke-text-primary/10 stroke-1" />
+                <path d={torsoPath} className="fill-text-primary/5 stroke-text-primary/10 stroke-1" />
+                <path d={legsPath} className="fill-text-primary/5 stroke-text-primary/10 stroke-1" />
+
 
                 {/* Head Zone */}
                 <g className="transition-all duration-300 hover:opacity-100 opacity-90 cursor-pointer group">
@@ -47,11 +48,13 @@ export default function BodyHitChart({ head, body, legs }: BodyHitChartProps) {
 
                     {/* Floating Label */}
                     <g className="opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-                        <line x1="125" y1="65" x2="160" y2="65" stroke="white" strokeWidth="1" />
-                        <text x="165" y="70" fill="white" fontSize="14" fontWeight="bold">Head</text>
+                        <line x1="125" y1="65" x2="160" y2="65" className="stroke-text-primary" strokeWidth="1" />
+                        <text x="165" y="70" className="fill-text-primary" fontSize="14" fontWeight="bold">Head</text>
                         <text x="165" y="86" fill="#00d4aa" fontSize="12">{headPercent}%</text>
                     </g>
-                    <text x="100" y="70" textAnchor="middle" fill="white" fontSize="12" fontWeight="bold" className="pointer-events-none drop-shadow-md">{headPercent}%</text>
+                    <text x="100" y="70" textAnchor="middle" className="fill-text-primary pointer-events-none drop-shadow-md" fontSize="12" fontWeight="bold">{headPercent}%</text>
+
+
                 </g>
 
                 {/* Body Zone */}
@@ -60,11 +63,13 @@ export default function BodyHitChart({ head, body, legs }: BodyHitChartProps) {
                     <path d={torsoPath} className="fill-yellow-500" style={{ opacity: Math.max(0.1, bodyPercent / 100) }} />
 
                     <g className="opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-                        <line x1="145" y1="190" x2="180" y2="190" stroke="white" strokeWidth="1" />
-                        <text x="185" y="195" fill="white" fontSize="14" fontWeight="bold">Body</text>
+                        <line x1="145" y1="190" x2="180" y2="190" className="stroke-text-primary" strokeWidth="1" />
+                        <text x="185" y="195" className="fill-text-primary" fontSize="14" fontWeight="bold">Body</text>
                         <text x="185" y="211" fill="#eab308" fontSize="12">{bodyPercent}%</text>
                     </g>
-                    <text x="100" y="200" textAnchor="middle" fill="white" fontSize="14" fontWeight="bold" className="pointer-events-none drop-shadow-md">{bodyPercent}%</text>
+                    <text x="100" y="200" textAnchor="middle" className="fill-text-primary pointer-events-none drop-shadow-md" fontSize="14" fontWeight="bold">{bodyPercent}%</text>
+
+
                 </g>
 
                 {/* Legs Zone */}
@@ -73,11 +78,13 @@ export default function BodyHitChart({ head, body, legs }: BodyHitChartProps) {
                     <path d={legsPath} className="fill-accent-red" style={{ opacity: Math.max(0.1, legsPercent / 100) }} />
 
                     <g className="opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-                        <line x1="140" y1="380" x2="175" y2="380" stroke="white" strokeWidth="1" />
-                        <text x="180" y="385" fill="white" fontSize="14" fontWeight="bold">Legs</text>
+                        <line x1="140" y1="380" x2="175" y2="380" className="stroke-text-primary" strokeWidth="1" />
+                        <text x="180" y="385" className="fill-text-primary" fontSize="14" fontWeight="bold">Legs</text>
                         <text x="180" y="401" fill="#ff4655" fontSize="12">{legsPercent}%</text>
                     </g>
-                    <text x="100" y="400" textAnchor="middle" fill="white" fontSize="14" fontWeight="bold" className="pointer-events-none drop-shadow-md">{legsPercent}%</text>
+                    <text x="100" y="400" textAnchor="middle" className="fill-text-primary pointer-events-none drop-shadow-md" fontSize="14" fontWeight="bold">{legsPercent}%</text>
+
+
                 </g>
                 {/* Scanline Effect */}
                 <rect x="0" y="0" width="200" height="500" fill="url(#scanline)" className="pointer-events-none animate-scanline opacity-30" />
