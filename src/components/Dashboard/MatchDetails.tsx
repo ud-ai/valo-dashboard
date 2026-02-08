@@ -29,16 +29,20 @@ const MAP_UUIDS: Record<string, string> = {
 
 export default function MatchDetails({ match, isOpen, onClose }: MatchDetailsProps) {
     const [mounted, setMounted] = useState(false);
+    const [isReady, setIsReady] = useState(false);
 
 
     useEffect(() => {
         setMounted(true);
+        if (isOpen) {
+            const timer = setTimeout(() => setIsReady(true), 180);
+            return () => {
+                clearTimeout(timer);
+                setIsReady(false);
+            };
+        }
         return () => setMounted(false);
-    }, []);
-
-
-
-
+    }, [isOpen]);
 
 
 
@@ -56,31 +60,36 @@ export default function MatchDetails({ match, isOpen, onClose }: MatchDetailsPro
 
     const mapId = MAP_UUIDS[match.map] || MAP_UUIDS["Haven"]; // Fallback to Haven
 
+    // 3-Phase Animation Config
+    const fast = { duration: 0.12, ease: "easeOut" } as any;
+    const base = { duration: 0.18, ease: "easeOut" } as any;
+
     // Use Portal to render outside the parent hierarchy
     return createPortal(
         <AnimatePresence>
             {isOpen && (
                 <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-                    {/* Backdrop */}
+                    {/* Backdrop - Opacity only for performance */}
                     <motion.div
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
+                        transition={fast}
                         onClick={onClose}
                         className="absolute inset-0 bg-black/60 backdrop-blur-sm"
                     />
 
                     {/* Modal Content */}
                     <motion.div
-                        initial={{ opacity: 0, scale: 0.9, y: 30 }}
-                        animate={{ opacity: 1, scale: 1, y: 0 }}
-                        exit={{ opacity: 0, scale: 0.9, y: 30 }}
-                        transition={{ duration: 0.4, ease: "easeOut" }}
+                        initial={{ opacity: 0, y: 8 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: 8 }}
+                        transition={base}
                         className="relative w-full max-w-2xl tactical-frame shadow-2xl overflow-hidden max-h-[90vh] overflow-y-auto"
                     >
 
 
-                        {/* Header */}
+                        {/* Header - Immediate visual presence */}
                         <div className="relative h-40 bg-bg-secondary overflow-hidden">
                             <div className="absolute inset-0 bg-gradient-to-t from-bg-primary via-transparent to-transparent z-10" />
                             {/* Map Image Background with Dynamic UUID */}
@@ -116,17 +125,22 @@ export default function MatchDetails({ match, isOpen, onClose }: MatchDetailsPro
 
 
 
-                        {/* Content */}
-                        <div className="p-4 md:p-8 space-y-6 md:space-y-8">
+                        {/* Phase 3 Content: Delayed Fade-in */}
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ delay: 0.12, duration: 0.15 }}
+                            className="p-4 md:p-8 space-y-6 md:space-y-8"
+                        >
 
 
 
-                            {/* Key Stats Row */}
+                            {/* Key Stats Row - Smaller stagger for speed */}
                             <motion.div
                                 initial="hidden"
                                 animate="visible"
                                 variants={{
-                                    visible: { transition: { staggerChildren: 0.05, delayChildren: 0.2 } }
+                                    visible: { transition: { staggerChildren: 0.03, delayChildren: 0.05 } }
                                 }}
                                 className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4"
                             >
@@ -137,12 +151,7 @@ export default function MatchDetails({ match, isOpen, onClose }: MatchDetailsPro
                             </motion.div>
 
 
-                            <motion.div
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: 0.4 }}
-                                className="grid md:grid-cols-2 gap-8"
-                            >
+                            <div className="grid md:grid-cols-2 gap-8">
                                 {/* Damage Stats */}
                                 <div className="space-y-4">
                                     <h3 className="text-sm font-bold uppercase tracking-widest text-text-secondary border-b border-white/10 pb-2">Combat Reporting</h3>
@@ -156,7 +165,7 @@ export default function MatchDetails({ match, isOpen, onClose }: MatchDetailsPro
                                     </div>
                                 </div>
 
-                                {/* Accuracy Stats */}
+                                {/* Accuracy Stats - DEFERRED RENDERING */}
                                 <div className="space-y-4">
                                     <h3 className="text-sm font-bold uppercase tracking-widest text-text-secondary border-b border-white/10 pb-2">Hit Accuracy</h3>
                                     <div className="h-[300px] w-full bg-bg-secondary/10 rounded-xl p-4 border border-white/5 relative overflow-hidden group/chart">
@@ -165,29 +174,41 @@ export default function MatchDetails({ match, isOpen, onClose }: MatchDetailsPro
                                             <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-yellow-500"></span> Body</span>
                                             <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-accent-red"></span> Legs</span>
                                         </div>
-                                        <BodyHitChart
-                                            head={match.headshots}
-                                            body={match.bodyshots}
-                                            legs={match.legshots}
-                                        />
+                                        {isReady ? (
+                                            <BodyHitChart
+                                                head={match.headshots}
+                                                body={match.bodyshots}
+                                                legs={match.legshots}
+                                            />
+                                        ) : (
+                                            <div className="w-full h-full flex items-center justify-center">
+                                                <div className="w-6 h-6 border-2 border-accent-red/20 border-t-accent-red rounded-full animate-spin" />
+                                            </div>
+                                        )}
                                     </div>
                                 </div>
-                            </motion.div>
+                            </div>
 
 
                             {/* Meta Info */}
-                            <div className="flex flex-wrap gap-4 text-xs text-text-muted pt-4 border-t border-white/10">
-                                <span>Match ID: {match.match_id}</span>
-                                <span>•</span>
-                                <span>Act: {match.ACT}</span>
-                                <span>•</span>
-                                <span>Team: {match.team}</span>
-                                <span>•</span>
-                                <span>Rounds: {match.total_rounds}</span>
-                                <span>•</span>
-                                <span>{match.date_and_time}</span>
-                            </div>
-                        </div>
+                            {isReady && (
+                                <motion.div
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    className="flex flex-wrap gap-4 text-xs text-text-muted pt-4 border-t border-white/10"
+                                >
+                                    <span>Match ID: {match.match_id}</span>
+                                    <span>•</span>
+                                    <span>Act: {match.ACT}</span>
+                                    <span>•</span>
+                                    <span>Team: {match.team}</span>
+                                    <span>•</span>
+                                    <span>Rounds: {match.total_rounds}</span>
+                                    <span>•</span>
+                                    <span>{match.date_and_time}</span>
+                                </motion.div>
+                            )}
+                        </motion.div>
                     </motion.div>
                 </div>
             )}
@@ -200,9 +221,10 @@ function StatBox({ label, value, icon: Icon, color }: any) {
     return (
         <motion.div
             variants={{
-                hidden: { opacity: 0, scale: 0.8 },
-                visible: { opacity: 1, scale: 1 }
+                hidden: { opacity: 0 },
+                visible: { opacity: 1 }
             }}
+
             whileHover={{ y: -5, backgroundColor: "rgba(255, 255, 255, 0.05)" }}
             className="tactical-frame p-4 transition-colors cursor-default"
         >

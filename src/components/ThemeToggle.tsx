@@ -30,19 +30,33 @@ export function ThemeToggle() {
         <button
             onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}
             className={cn(
-                "p-2.5 rounded-lg transition-all active:scale-90",
-                "bg-bg-card border border-white/10 text-text-primary hover:text-accent-red",
+                "p-2.5 rounded-lg transition-all duration-200",
+                "bg-transparent hover:bg-bg-secondary text-text-primary",
                 "flex items-center justify-center min-w-[40px] min-h-[40px] cursor-pointer"
             )}
             aria-label="Toggle theme"
         >
-            {resolvedTheme === "dark" ? (
-                <Sun className="h-5 w-5" />
-            ) : (
-                <Moon className="h-5 w-5" />
-            )}
+            <AnimatePresence mode="wait">
+                <motion.div
+                    key={resolvedTheme}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.15, ease: "linear" }}
+                >
+                    {resolvedTheme === "dark" ? (
+                        <Sun className="h-5 w-5 fill-current" />
+                    ) : (
+                        <Moon className="h-5 w-5" />
+                    )}
+                </motion.div>
+            </AnimatePresence>
+
         </button>
+
+
     );
+
 }
 
 

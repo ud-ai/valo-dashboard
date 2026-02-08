@@ -35,17 +35,32 @@
 }
 
 .light {
-  --bg-primary: #f8fafc;
-  --bg-secondary: #ffffff;
+  /* Neutrals: Editorial Professional Palette */
+  --bg-primary: #f9fafb;
+  --bg-secondary: #f3f4f6;
   --bg-card: #ffffff;
 
-  --text-primary: #0f172a;
-  --text-secondary: #475569;
-  --text-muted: #94a3b8;
+  /* Typography: Professional High-Contrast */
+  --text-primary: #111827;
+  /* Headings */
+  --text-secondary: #4b5563;
+  /* Body labels */
+  --text-muted: #9ca3af;
+  /* Meta text */
 
-  --border-color: rgba(15, 23, 42, 0.08);
-  --noise-opacity: 0.02;
+  /* Muted Tactical Accents – Softened for White BG */
+  --accent-red: #ef4444;
+  --accent-green: #22c55e;
+  --accent-cyan: #0891b2;
+  --accent-purple: #7c3aed;
+
+  --border-color: #e5e7eb;
+  --noise-opacity: 0.01;
 }
+
+
+
+
 
 
 
@@ -90,11 +105,12 @@ body::before {
 
 .light body::before {
   background-image:
-    linear-gradient(rgba(15, 23, 42, 0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(15, 23, 42, 0.03) 1px, transparent 1px);
-  background-size: 30px 30px;
-  opacity: 0.5;
+    linear-gradient(rgba(17, 24, 39, 0.015) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(17, 24, 39, 0.015) 1px, transparent 1px);
+  background-size: 60px 60px;
+  opacity: 0.4;
 }
+
 
 
 
@@ -212,16 +228,22 @@ body::before {
 
 .light .tactical-frame {
   background: var(--bg-card);
-  box-shadow:
-    0 4px 6px -1px rgba(0, 0, 0, 0.05),
-    0 2px 4px -1px rgba(0, 0, 0, 0.03),
-    inset 0 0 0 1px rgba(0, 0, 0, 0.02);
-  border: 1px solid rgba(0, 0, 0, 0.05);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+  border: 1px solid var(--border-color);
 }
 
 .light .tactical-frame::after {
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  background: var(--accent-red);
+}
+
+.light .tactical-frame:hover::after {
   opacity: 0.2;
 }
+
+
+
 
 
 
@@ -243,8 +265,8 @@ body::before {
   position: relative;
 }
 
-/* Decorative Corner Notches */
-.tactical-frame::before {
+/* Decorative Corner Notches - Only applying to specific containers */
+.tactical-frame.show-notches::before {
   content: '';
   position: absolute;
   top: 0;
@@ -261,6 +283,12 @@ body::before {
   pointer-events: none;
   z-index: 1;
 }
+
+.light .tactical-frame.show-notches::before {
+  opacity: 0.1;
+  /* Even softer for light mode */
+}
+
 
 .dark .tactical-frame {
   box-shadow: 0 0 20px rgba(255, 70, 85, 0.05);
