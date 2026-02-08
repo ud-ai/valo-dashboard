@@ -18,7 +18,7 @@ export default function MatchCard({ match, onClick }: MatchCardProps) {
         <div
             onClick={onClick}
             className={cn(
-                "group relative overflow-hidden rounded-xl transition-all duration-300 hover:scale-[1.005] hover:shadow-xl cursor-pointer",
+                "group relative overflow-hidden rounded-xl transition-all duration-300 hover:scale-[1.005] active:scale-[0.99] hover:shadow-xl cursor-pointer",
                 "bg-bg-card border border-border-color dark:border-white/15 dark:bg-bg-card/40 shadow-sm hover:shadow-md",
                 isWin ? "hover:border-accent-cyan/50" : isLoss ? "hover:border-accent-red/50" : "hover:border-text-muted/50"
             )}
@@ -34,6 +34,10 @@ export default function MatchCard({ match, onClick }: MatchCardProps) {
                 "absolute inset-0 opacity-0 group-hover:opacity-10 transition-opacity duration-500",
                 isWin ? "bg-gradient-to-r from-accent-cyan to-transparent" : isLoss ? "bg-gradient-to-r from-accent-red to-transparent" : ""
             )} />
+
+            {/* Tech Corners */}
+            <div className="tech-corner-tl opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+            <div className="tech-corner-br opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
             <div className="relative z-10 flex flex-col md:flex-row items-center gap-4 p-4 pl-6">
                 {/* Map & Agent Info */}

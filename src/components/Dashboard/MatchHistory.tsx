@@ -1,162 +1,245 @@
 "use client";
-import { useState } from "react";
+import React from 'react';
+
 import { Match } from "@/types";
-import MatchCard from "./MatchCard";
-import MatchDetails from "./MatchDetails";
-import { cn } from "@/lib/utils";
-import { Filter, Search, ChevronDown } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import Image from "next/image";
+import { cn } from "@/lib/utils";
+import { getAgentImageUrl, getMapImageUrl } from "@/lib/valorant-data";
 
 interface MatchHistoryProps {
     matches: Match[];
+    onMatchClick?: (match: Match) => void;
 }
 
-type FilterType = "all" | "won" | "lost";
 
-export default function MatchHistory({ matches }: MatchHistoryProps) {
-    const [filter, setFilter] = useState<FilterType>("all");
-    const [searchQuery, setSearchQuery] = useState("");
-    const [selectedMatch, setSelectedMatch] = useState<Match | null>(null);
-    const [isFilterOpen, setIsFilterOpen] = useState(false);
-
-    const filteredMatches = matches.filter((match) => {
-        // 1. Filter by Result
-        if (filter !== "all" && match.result.toLowerCase() !== filter) return false;
-
-        // 2. Filter by Search Query (Map or Agent)
-        if (searchQuery) {
-            const query = searchQuery.toLowerCase();
-            const mapMatch = match.map.toLowerCase().includes(query);
-            const agentMatch = match.agent.toLowerCase().includes(query);
-            return mapMatch || agentMatch;
-        }
-
-        return true;
-    });
-
+function MatchHistorySkeleton() {
     return (
         <div className="space-y-4">
-            <div className="relative z-10 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-bg-card/50 dark:bg-bg-secondary/20 p-4 rounded-xl border border-border-color dark:border-white/5 backdrop-blur-sm shadow-sm dark:shadow-none">
-                <h2 className="text-xl font-bold text-text-primary dark:text-white flex items-center gap-2">
-                    Latest Matches
-                    <span className="text-xs px-2 py-1 bg-bg-secondary/50 dark:bg-white/10 rounded-full text-text-muted">{filteredMatches.length}</span>
+            {[...Array(3)].map((_, i) => (
+                <div key={i} className={cn(
+                    "relative flex items-center gap-4 p-4 border-b border-white/5 animate-pulse",
+                    i % 2 === 0 ? "flex-row" : "flex-row-reverse"
+                )}>
+                    {/* Skeleton Agent */}
+                    <div className="w-16 h-16 bg-white/10 shrink-0" />
+
+                    {/* Skeleton Info */}
+                    <div className={cn("flex-1 flex flex-col gap-2", i % 2 === 0 ? "items-start" : "items-end")}>
+                        <div className="h-8 w-32 bg-white/10" />
+                        <div className="h-4 w-48 bg-white/5" />
+                    </div>
+                </div>
+            ))}
+        </div>
+    );
+}
+
+function MatchItem({ match, index, onClick }: { match: Match; index: number; onClick?: () => void }) {
+    const isWin = match.result === "Won";
+    return (
+        <motion.div
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{
+                type: "spring",
+                stiffness: 100,
+                damping: 15,
+                delay: index * 0.03
+            }}
+            whileHover={{
+                scale: 1.01,
+                backgroundColor: "rgba(255, 255, 255, 0.03)",
+                transition: { duration: 0.2 }
+            }}
+            whileTap={{ scale: 0.99 }}
+            onClick={onClick}
+            className="group relative flex items-center gap-6 p-4 border-b border-border-color/10 cursor-pointer overflow-hidden"
+        >
+            {/* Hover Glow Effect */}
+            <div className="absolute inset-0 bg-gradient-to-r from-accent-red/0 via-accent-red/[0.03] to-accent-red/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+
+            {/* Result Indicator */}
+            <div className={cn(
+                "w-1 self-stretch rounded-full relative z-10",
+                isWin ? "bg-accent-green shadow-[0_0_12px_rgba(204,255,0,0.6)]" : "bg-accent-red shadow-[0_0_12px_rgba(255,70,85,0.6)]"
+            )} />
+
+            {/* Agent Icon */}
+            <div className="relative w-12 h-12 bg-bg-card border border-border-color/10 shrink-0 z-10 group-hover:border-accent-red/30 transition-colors">
+                <Image
+                    src={getAgentImageUrl(match.agent)}
+                    alt={match.agent}
+                    fill
+                    className="object-cover group-hover:scale-110 transition-transform duration-500"
+                />
+            </div>
+
+            {/* Match Info */}
+            <div className="flex-1 grid grid-cols-2 md:grid-cols-4 items-center gap-4 z-10">
+                <div>
+                    <h3 className="text-xl font-bold text-text-primary uppercase tracking-tight group-hover:text-accent-red transition-colors">
+                        {match.map}
+                    </h3>
+                    <div className="text-[10px] font-mono text-text-muted uppercase tracking-widest">{match.agent}</div>
+                </div>
+
+                <div className="hidden md:block">
+                    <div className="text-[10px] font-mono text-text-muted uppercase tracking-widest mb-1">Result</div>
+                    <span className={cn("text-xs font-bold uppercase", isWin ? "text-accent-green" : "text-accent-red")}>
+                        {match.result}
+                    </span>
+                </div>
+
+                <div className="hidden md:block">
+                    <div className="text-[10px] font-mono text-text-muted uppercase tracking-widest mb-1">Combat</div>
+                    <div className="text-xs font-mono text-text-secondary">
+                        {match.kills} / {match.deaths} / {match.assists}
+                    </div>
+                </div>
+
+                <div className="text-right">
+                    <div className="text-[10px] font-mono text-text-muted uppercase tracking-widest mb-1">ACS</div>
+                    <div className="text-lg font-bold text-text-primary">
+                        {match.ACS}
+                    </div>
+                </div>
+            </div>
+
+            {/* Action */}
+            <div className="text-text-muted group-hover:text-accent-red transition-colors z-10">
+                <motion.div whileHover={{ x: 5 }}>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6" /></svg>
+                </motion.div>
+            </div>
+        </motion.div>
+
+    );
+}
+
+export default function MatchHistory({ matches, onMatchClick }: MatchHistoryProps) {
+    const [isLoading, setIsLoading] = React.useState(true);
+    const [searchQuery, setSearchQuery] = React.useState("");
+    const [filter, setFilter] = React.useState<"all" | "won" | "lost">("all");
+    const [isDropdownOpen, setIsDropdownOpen] = React.useState(false);
+
+    React.useEffect(() => {
+        const timer = setTimeout(() => setIsLoading(false), 800);
+        return () => clearTimeout(timer);
+    }, []);
+
+    const filteredMatches = React.useMemo(() => {
+        return matches.filter(match => {
+            const matchesSearch =
+                match.map.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                match.agent.toLowerCase().includes(searchQuery.toLowerCase());
+
+            const matchesFilter =
+                filter === "all" ||
+                (filter === "won" && match.result === "Won") ||
+                (filter === "lost" && match.result === "Lost");
+
+            return matchesSearch && matchesFilter;
+        });
+    }, [matches, searchQuery, filter]);
+
+    return (
+        <div className="w-full space-y-6">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <h2 className="text-xs font-mono text-text-muted tracking-[0.3em] uppercase flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 bg-accent-red" />
+                    Match History
                 </h2>
 
-                <div className="flex flex-col sm:flex-row flex-1 w-full md:w-auto gap-3">
+                <div className="flex flex-wrap items-center gap-3">
                     {/* Search Bar */}
-                    <div className="relative flex-1">
-                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted" size={16} />
+                    <div className="relative group">
+                        <div className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted group-focus-within:text-accent-red transition-colors">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg>
+                        </div>
                         <input
                             type="text"
-                            placeholder="Search Agent, Map..."
+                            placeholder="Search Map or Agent..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full bg-bg-primary/50 border border-border-color dark:border-white/10 rounded-lg pl-10 pr-4 py-2 text-sm text-text-primary dark:text-white focus:outline-none focus:border-accent-cyan/50 transition-colors placeholder:text-text-muted"
+                            className="bg-bg-card border border-border-color/10 pl-9 pr-4 py-2 rounded-lg text-xs font-mono text-text-primary focus:outline-none focus:border-accent-red/50 transition-all w-full md:w-48"
                         />
                     </div>
 
                     {/* Filter Dropdown */}
-                    <div className="relative min-w-[140px] z-50">
-                        <button
-                            onClick={() => setIsFilterOpen(!isFilterOpen)}
-                            className="w-full flex items-center justify-between gap-2 bg-bg-primary/50 border border-border-color dark:border-white/10 rounded-lg px-4 py-2 text-sm text-text-primary dark:text-white hover:bg-bg-primary/70 transition-colors"
+                    <div className="relative">
+                        <motion.button
+                            onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                            className="flex items-center gap-3 px-4 py-2 bg-bg-card border border-border-color/10 rounded-lg text-[10px] font-mono uppercase tracking-widest text-text-primary hover:border-accent-red/50 transition-colors"
                         >
-                            <span className="flex items-center gap-2">
-                                <Filter size={14} className="text-text-muted" />
-                                {filter === 'all' ? 'All Matches' : filter.charAt(0).toUpperCase() + filter.slice(1)}
-                            </span>
-                            <ChevronDown size={14} className={`text-text-muted transition-transform duration-200 ${isFilterOpen ? 'rotate-180' : ''}`} />
-                        </button>
+                            <span className="text-text-muted">Result:</span>
+                            <span className="text-accent-red font-bold">{filter}</span>
+                            <motion.span animate={{ rotate: isDropdownOpen ? 180 : 0 }}>
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6" /></svg>
+                            </motion.span>
+                        </motion.button>
 
                         <AnimatePresence>
-                            {isFilterOpen && (
-                                <motion.div
-                                    initial={{ opacity: 0, y: 5 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    exit={{ opacity: 0, y: 5 }}
-                                    transition={{ duration: 0.2 }}
-                                    className="absolute top-full right-0 mt-2 w-full bg-bg-card dark:bg-bg-secondary border border-border-color dark:border-white/10 rounded-lg shadow-xl overflow-hidden"
-                                >
-                                    {['all', 'won', 'lost'].map((f) => (
-                                        <button
-                                            key={f}
-                                            className={cn(
-                                                "w-full text-left px-4 py-2 text-sm hover:bg-bg-primary/50 dark:hover:bg-white/5 transition-colors",
-                                                filter === f ? "text-accent-red font-bold" : "text-text-primary dark:text-text-secondary"
-                                            )}
-                                            onClick={() => {
-                                                setFilter(f as FilterType);
-                                                setIsFilterOpen(false);
-                                            }}
-                                        >
-                                            {f === 'all' ? 'All Matches' : f.charAt(0).toUpperCase() + f.slice(1)}
-                                        </button>
-                                    ))}
-                                </motion.div>
+                            {isDropdownOpen && (
+                                <>
+                                    <div
+                                        className="fixed inset-0 z-40"
+                                        onClick={() => setIsDropdownOpen(false)}
+                                    />
+                                    <motion.div
+                                        initial={{ opacity: 0, y: -10, scale: 0.95 }}
+                                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                                        exit={{ opacity: 0, y: -10, scale: 0.95 }}
+                                        transition={{ type: "spring", stiffness: 300, damping: 25 }}
+                                        className="absolute right-0 mt-2 w-32 bg-bg-card border border-border-color/10 rounded-lg shadow-2xl overflow-hidden z-50 backdrop-blur-xl"
+                                    >
+
+                                        {(["all", "won", "lost"] as const).map((f) => (
+                                            <button
+                                                key={f}
+                                                onClick={() => {
+                                                    setFilter(f);
+                                                    setIsDropdownOpen(false);
+                                                }}
+                                                className={cn(
+                                                    "w-full px-4 py-2.5 text-left text-[10px] font-mono uppercase tracking-widest transition-colors border-b last:border-b-0 border-border-color/5",
+                                                    filter === f
+                                                        ? "bg-accent-red/10 text-accent-red"
+                                                        : "text-text-muted hover:bg-white/5 hover:text-text-primary"
+                                                )}
+                                            >
+                                                {f}
+                                            </button>
+                                        ))}
+                                    </motion.div>
+                                </>
                             )}
                         </AnimatePresence>
                     </div>
                 </div>
             </div>
 
-
-
-            <div className={`space-y-3 transition-opacity duration-200 ${isFilterOpen ? 'pointer-events-none opacity-50' : 'opacity-100'}`}>
-                <AnimatePresence mode="popLayout">
-                    {filteredMatches.map((match, index) => (
-                        <motion.div
-                            key={match.match_id}
-                            layout
-                            custom={index}
-                            initial="hidden"
-                            animate="show"
-                            variants={{
-                                hidden: { opacity: 0, x: -20 },
-                                show: (i: number) => ({
-                                    opacity: 1,
-                                    x: 0,
-                                    transition: {
-                                        delay: i * 0.05,
-                                        duration: 0.3
-                                    }
-                                })
-                            }}
-                            exit={{ opacity: 0, scale: 0.95 }}
-                        >
-                            <MatchCard match={match} onClick={() => !isFilterOpen && setSelectedMatch(match)} />
-                        </motion.div>
-                    ))}
-                </AnimatePresence>
-
-                {filteredMatches.length === 0 && (
-                    <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        className="py-16 text-center text-text-muted bg-bg-card/20 rounded-2xl border border-border-color border-dashed backdrop-blur-sm"
-                    >
-                        <p>No matches found for this filter.</p>
-                    </motion.div>
+            <div className="bg-bg-card border border-border-color/10 overflow-hidden">
+                {isLoading ? (
+                    <MatchHistorySkeleton />
+                ) : filteredMatches.length > 0 ? (
+                    <div className="divide-y divide-border-color/10">
+                        {filteredMatches.map((match, index) => (
+                            <MatchItem
+                                key={index}
+                                match={match}
+                                index={index}
+                                onClick={() => onMatchClick?.(match)}
+                            />
+                        ))}
+                    </div>
+                ) : (
+                    <div className="py-20 text-center space-y-2">
+                        <div className="text-text-muted font-mono text-xs uppercase tracking-[0.2em]">No Matches Found</div>
+                        <div className="text-[10px] text-text-muted opacity-50">Try adjusting your search or filters</div>
+                    </div>
                 )}
             </div>
-
-            {/* Match Details Modal */}
-            {
-                selectedMatch && (
-                    <MatchDetails
-                        match={selectedMatch}
-                        isOpen={!!selectedMatch}
-                        onClose={() => setSelectedMatch(null)}
-                    />
-                )
-            }
-
-            {/* Click outside handler & Backdrop for dropdown */}
-            {isFilterOpen && (
-                <div
-                    className="fixed inset-0 z-[5] bg-black/40"
-                    onClick={() => setIsFilterOpen(false)}
-                />
-            )}
-        </div >
+        </div>
     );
 }

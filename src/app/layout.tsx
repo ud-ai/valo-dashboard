@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import Cursor from "@/components/UI/Cursor";
 
 const inter = Inter({
   variable: "--font-inter",

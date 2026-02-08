@@ -1,101 +1,114 @@
 "use client";
 import Image from "next/image";
-import { motion } from "framer-motion";
+import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { Player } from "@/types";
+import { getAgentImageUrl, getRankImageUrl } from "@/lib/valorant-data";
 
 interface PlayerProfileProps {
     player: Player;
 }
 
 export default function PlayerProfile({ player }: PlayerProfileProps) {
+    const signatureAgent = "Sova";
+    const agentMatches = player.matches.filter(m => m.agent === signatureAgent);
+    const wins = agentMatches.filter(m => m.result === "Won").length;
+    const winRate = agentMatches.length > 0 ? ((wins / agentMatches.length) * 100).toFixed(1) : "0.0";
+
     return (
-        <div className="w-full bg-bg-card/50 dark:bg-bg-secondary/80 backdrop-blur-md rounded-2xl p-6 border border-border-color dark:border-white/15 shadow-sm dark:shadow-lg relative overflow-hidden group hover:border-accent-red/20 dark:hover:border-white/20 transition-colors">
-            {/* Valorant Watermark */}
-            <div className="absolute -top-10 -right-10 text-[150px] font-black text-white/5 leading-none select-none pointer-events-none z-0 tracking-tighter">
-                VALORANT
+        <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+            className="w-full relative glass-card p-6 border border-border-color/10 group overflow-hidden"
+        >
+            <div className="absolute inset-0 bg-gradient-to-br from-accent-red/[0.02] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
+
+            <div className="flex flex-col items-center gap-6 relative z-10">
+
+                {/* Avatar */}
+                <motion.div
+                    whileHover={{ scale: 1.05, rotate: 1 }}
+                    whileTap={{ scale: 0.98 }}
+                    transition={{ type: "spring", stiffness: 300, damping: 15 }}
+                    className="relative w-48 h-48 border-2 border-accent-red shadow-2xl cursor-pointer"
+                >
+                    <Image
+                        src={player.player_card_link}
+                        alt={player.player_name}
+                        fill
+                        className="object-cover"
+                        priority
+                    />
+                    <div className="absolute top-2 right-2 bg-accent-red text-white font-mono text-[10px] px-2 py-0.5 font-bold shadow-lg">
+                        LVL.{player.player_account_level}
+                    </div>
+                </motion.div>
+
+
+                {/* Name & ID */}
+                <motion.div
+                    initial={{ y: 10, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    transition={{ delay: 0.2 }}
+                    className="text-center"
+                >
+                    <h1 className="text-4xl font-black text-text-primary uppercase tracking-tight">
+                        {player.player_name.split('#')[0]}
+                    </h1>
+                    <div className="text-text-secondary font-mono text-sm tracking-widest mt-1">
+                        #{player.player_name.split('#')[1]}
+                    </div>
+                </motion.div>
+
+
+                <motion.div
+                    initial={{ y: 10, opacity: 0 }}
+                    animate={{ y: 0, opacity: 1 }}
+                    transition={{ delay: 0.3 }}
+                    className="flex flex-col gap-4 w-full"
+                >
+                    {/* Rank Section */}
+                    <div className="flex items-center gap-4 w-full pt-4 border-t border-border-color/10">
+                        <div className="w-12 h-12 relative transition-all duration-500 hover:rotate-6">
+                            <Image
+                                src={getRankImageUrl(player.current_rank)}
+                                alt="Rank"
+                                fill
+                                className="object-contain"
+                            />
+                        </div>
+                        <div>
+                            <div className="text-[10px] font-mono text-text-muted uppercase tracking-[0.2em]">Rank</div>
+                            <div className="text-xl font-bold text-text-primary uppercase">
+                                {player.current_rank}
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Signature Agent (Most Played) */}
+                    <div className="flex items-center gap-4 w-full pt-4 border-t border-border-color/10">
+                        <div className="w-12 h-12 relative overflow-hidden bg-bg-card border border-border-color/10 hover:border-accent-red/50 transition-colors">
+                            <Image
+                                src={getAgentImageUrl("Sova")}
+                                alt="Signature Agent"
+                                fill
+                                className="object-cover hover:scale-110 transition-transform duration-500"
+                            />
+                        </div>
+                        <div>
+                            <div className="text-[10px] font-mono text-text-muted uppercase tracking-[0.2em]">Signature Agent</div>
+                            <div className="text-xl font-bold text-text-primary uppercase leading-tight">
+                                {signatureAgent}
+                            </div>
+                            <div className="text-[10px] font-mono text-accent-red font-bold uppercase mt-0.5">
+                                Win Rate: {winRate}%
+                            </div>
+                        </div>
+                    </div>
+                </motion.div>
+
             </div>
-            <div className="absolute top-0 right-0 w-64 h-64 bg-accent-red/5 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/2 pointer-events-none" />
+        </motion.div>
 
-            <motion.div
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.6, delay: 0.2 }}
-                className="relative flex flex-col md:flex-row items-center gap-6 md:gap-8 z-10"
-            >
-                {/* Avatar Section */}
-                <div className="relative">
-                    <motion.div
-                        initial={{ scale: 0.8, opacity: 0 }}
-                        animate={{ scale: 1, opacity: 1 }}
-                        transition={{ type: "spring", stiffness: 100, delay: 0.3 }}
-                        className="w-24 h-24 md:w-32 md:h-32 rounded-2xl overflow-hidden ring-4 ring-bg-primary shadow-2xl relative group-hover:scale-105 transition-transform duration-500"
-                    >
-                        <Image
-                            src={player.player_card_link}
-                            alt={player.player_name}
-                            fill
-                            className="object-cover"
-                            priority
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                    </motion.div>
-                    <motion.div
-                        initial={{ scale: 0 }}
-                        animate={{ scale: 1 }}
-                        transition={{ delay: 0.5 }}
-                        className="absolute -bottom-2 -right-2 bg-bg-card px-3 py-1 rounded-lg border border-white/10 shadow-lg flex items-center gap-2"
-                    >
-                        <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-                        <span className="text-xs font-bold text-green-400">Online</span>
-                    </motion.div>
-                </div>
-
-                {/* Info Section */}
-                <div className="flex-1 text-center md:text-left space-y-4 w-full">
-                    <div>
-                        <div className="flex flex-col md:flex-row items-center md:items-end gap-3 mb-1 justify-center md:justify-start">
-                            <h1 className="text-3xl md:text-5xl font-black tracking-tight text-text-primary drop-shadow-lg">
-                                {player.player_name.split('#')[0]}
-                            </h1>
-                            <span className="text-xl md:text-2xl text-text-muted font-medium mb-1">#{player.player_name.split('#')[1]}</span>
-                        </div>
-                        <p className="text-sm text-text-muted flex items-center justify-center md:justify-start gap-2">
-                            <span className="px-2 py-0.5 rounded bg-bg-primary border border-border-color text-xs text-text-secondary">NA Region</span>
-                            <span>•</span>
-                            <span>Level {player.player_account_level}</span>
-                        </p>
-                    </div>
-
-                    {/* Rank & Stats Row */}
-                    <div className="flex flex-wrap items-center justify-center md:justify-start gap-3 md:gap-6">
-                        <div className="flex items-center gap-3 bg-bg-card/50 px-4 py-2 rounded-xl border border-border-color backdrop-blur-sm hover:bg-bg-card/80 transition-colors">
-                            <div className="w-10 h-10 md:w-12 md:h-12 relative animate-float">
-                                <Image
-                                    src="https://media.valorant-api.com/competitivetiers/03621f52-4428-b332-236b-0961a3086035/24/largeicon.png"
-                                    alt="Rank"
-                                    fill
-                                    className="object-contain drop-shadow-md"
-                                />
-                            </div>
-                            <div className="text-left">
-                                <p className="text-xs text-text-secondary uppercase font-bold tracking-wider">Current Rank</p>
-                                <p className="text-lg md:text-xl font-black text-text-primary">{player.current_rank}</p>
-                            </div>
-                        </div>
-
-                        <div className="h-8 w-px bg-white/10 hidden md:block" />
-
-                        <div className="text-left bg-bg-primary/30 px-4 py-2 rounded-xl border border-white/5 backdrop-blur-sm">
-                            <p className="text-xs text-text-secondary uppercase font-bold tracking-wider">Peak Rank</p>
-                            <div className="flex items-baseline gap-1">
-                                <p className="text-lg font-bold text-accent-purple">
-                                    {player.peak_rank.split('e8a3')[0].trim()}
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </motion.div>
-        </div>
     );
 }

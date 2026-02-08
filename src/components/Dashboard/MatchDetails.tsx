@@ -65,11 +65,13 @@ export default function MatchDetails({ match, isOpen, onClose }: MatchDetailsPro
 
                     {/* Modal Content */}
                     <motion.div
-                        initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                        initial={{ opacity: 0, scale: 0.9, y: 30 }}
                         animate={{ opacity: 1, scale: 1, y: 0 }}
-                        exit={{ opacity: 0, scale: 0.95, y: 20 }}
+                        exit={{ opacity: 0, scale: 0.9, y: 30 }}
+                        transition={{ type: "spring", stiffness: 260, damping: 20 }}
                         className="relative w-full max-w-2xl bg-bg-card border border-white/10 rounded-2xl shadow-2xl overflow-hidden max-h-[90vh] overflow-y-auto"
                     >
+
                         {/* Header */}
                         <div className="relative h-32 bg-gradient-to-r from-bg-secondary to-bg-primary overflow-hidden">
                             <div className="absolute inset-0 bg-gradient-to-r from-black/40 to-transparent z-10" />
@@ -101,22 +103,35 @@ export default function MatchDetails({ match, isOpen, onClose }: MatchDetailsPro
                         {/* Content */}
                         <div className="p-4 md:p-8 space-y-6 md:space-y-8">
                             {/* Key Stats Row */}
-                            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
+                            <motion.div
+                                initial="hidden"
+                                animate="visible"
+                                variants={{
+                                    visible: { transition: { staggerChildren: 0.05, delayChildren: 0.2 } }
+                                }}
+                                className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4"
+                            >
                                 <StatBox label="Combat Score" value={match.ACS} icon={Zap} color="text-yellow-400" />
                                 <StatBox label="K / D / A" value={`${match.kills} / ${match.deaths} / ${match.assists}`} icon={Trophy} color="text-text-primary" />
                                 <StatBox label="KD Ratio" value={match.kd_ratio} icon={Target} color={match.kd_ratio >= 1 ? "text-accent-cyan" : "text-accent-red"} />
                                 <StatBox label="Headshot %" value={`${match.headshot_percentage}%`} icon={Skull} color="text-accent-purple" />
-                            </div>
+                            </motion.div>
 
-                            <div className="grid md:grid-cols-2 gap-8">
+
+                            <motion.div
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: 0.4 }}
+                                className="grid md:grid-cols-2 gap-8"
+                            >
                                 {/* Damage Stats */}
                                 <div className="space-y-4">
                                     <h3 className="text-sm font-bold uppercase tracking-widest text-text-secondary border-b border-white/10 pb-2">Combat Reporting</h3>
-                                    <div className="flex justify-between items-center p-3 bg-bg-secondary/20 rounded-lg">
+                                    <div className="flex justify-between items-center p-3 bg-bg-secondary/20 rounded-lg hover:bg-white/5 transition-colors">
                                         <span className="text-text-muted">Total Damage Dealt</span>
                                         <span className="text-text-primary font-mono font-bold">{match.damage_made.toLocaleString()}</span>
                                     </div>
-                                    <div className="flex justify-between items-center p-3 bg-bg-secondary/20 rounded-lg">
+                                    <div className="flex justify-between items-center p-3 bg-bg-secondary/20 rounded-lg hover:bg-white/5 transition-colors">
                                         <span className="text-text-muted">Total Damage Received</span>
                                         <span className="text-text-primary font-mono font-bold">{match.damage_received.toLocaleString()}</span>
                                     </div>
@@ -125,8 +140,8 @@ export default function MatchDetails({ match, isOpen, onClose }: MatchDetailsPro
                                 {/* Accuracy Stats */}
                                 <div className="space-y-4">
                                     <h3 className="text-sm font-bold uppercase tracking-widest text-text-secondary border-b border-white/10 pb-2">Hit Accuracy</h3>
-                                    <div className="h-[300px] w-full bg-bg-secondary/10 rounded-xl p-4 border border-white/5 relative overflow-hidden">
-                                        <div className="absolute top-2 right-2 text-xs text-text-muted flex flex-col items-end gap-1 z-10">
+                                    <div className="h-[300px] w-full bg-bg-secondary/10 rounded-xl p-4 border border-white/5 relative overflow-hidden group/chart">
+                                        <div className="absolute top-2 right-2 text-xs text-text-muted flex flex-col items-end gap-1 z-10 transition-opacity opacity-50 group-hover/chart:opacity-100">
                                             <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-accent-cyan"></span> Head</span>
                                             <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-yellow-500"></span> Body</span>
                                             <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-accent-red"></span> Legs</span>
@@ -138,7 +153,8 @@ export default function MatchDetails({ match, isOpen, onClose }: MatchDetailsPro
                                         />
                                     </div>
                                 </div>
-                            </div>
+                            </motion.div>
+
 
                             {/* Meta Info */}
                             <div className="flex flex-wrap gap-4 text-xs text-text-muted pt-4 border-t border-white/10">
@@ -163,14 +179,22 @@ export default function MatchDetails({ match, isOpen, onClose }: MatchDetailsPro
 
 function StatBox({ label, value, icon: Icon, color }: any) {
     return (
-        <div className="bg-bg-secondary/30 p-4 rounded-xl border border-white/5">
+        <motion.div
+            variants={{
+                hidden: { opacity: 0, scale: 0.8 },
+                visible: { opacity: 1, scale: 1 }
+            }}
+            whileHover={{ y: -5, backgroundColor: "rgba(255, 255, 255, 0.05)" }}
+            className="bg-bg-secondary/30 p-4 rounded-xl border border-white/5 transition-colors cursor-default"
+        >
             <div className={`flex items-center gap-2 mb-2 ${color} opacity-80`}>
                 <Icon size={16} />
                 <span className="text-xs font-bold uppercase tracking-wider">{label}</span>
             </div>
             <div className={`text-2xl font-black ${color}`}>{value}</div>
-        </div>
+        </motion.div>
     )
 }
+
 
 
