@@ -133,15 +133,15 @@ function MatchItem({ match, index, onClick }: { match: Match; index: number; onC
 }
 
 export default function MatchHistory({ matches, onMatchClick }: MatchHistoryProps) {
-    const [isLoading, setIsLoading] = React.useState(true);
+    const [isLoading, setIsLoading] = React.useState(false);
+
     const [searchQuery, setSearchQuery] = React.useState("");
     const [filter, setFilter] = React.useState<"all" | "won" | "lost">("all");
     const [isDropdownOpen, setIsDropdownOpen] = React.useState(false);
 
-    React.useEffect(() => {
-        const timer = setTimeout(() => setIsLoading(false), 800);
-        return () => clearTimeout(timer);
-    }, []);
+
+
+
 
     const filteredMatches = React.useMemo(() => {
         return matches.filter(match => {

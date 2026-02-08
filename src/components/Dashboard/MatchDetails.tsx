@@ -29,20 +29,16 @@ const MAP_UUIDS: Record<string, string> = {
 
 export default function MatchDetails({ match, isOpen, onClose }: MatchDetailsProps) {
     const [mounted, setMounted] = useState(false);
-    const [isLoading, setIsLoading] = useState(false);
+
 
     useEffect(() => {
         setMounted(true);
         return () => setMounted(false);
     }, []);
 
-    useEffect(() => {
-        if (isOpen && match) {
-            setIsLoading(true);
-            const timer = setTimeout(() => setIsLoading(false), 1200);
-            return () => clearTimeout(timer);
-        }
-    }, [isOpen, match?.match_id]);
+
+
+
 
 
 
@@ -117,32 +113,13 @@ export default function MatchDetails({ match, isOpen, onClose }: MatchDetailsPro
                         </div>
 
 
-                        {/* Content Overlay / Loading State */}
-                        <AnimatePresence>
-                            {isLoading && (
-                                <motion.div
-                                    initial={{ opacity: 0 }}
-                                    animate={{ opacity: 1 }}
-                                    exit={{ opacity: 0 }}
-                                    className="absolute inset-0 z-40 bg-bg-primary/90 backdrop-blur-md flex flex-col items-center justify-center space-y-4"
-                                >
-                                    <div className="relative w-64 h-1 bg-white/10 overflow-hidden">
-                                        <motion.div
-                                            initial={{ x: "-100%" }}
-                                            animate={{ x: "100%" }}
-                                            transition={{ repeat: Infinity, duration: 1.5, ease: "linear" }}
-                                            className="absolute inset-0 bg-accent-red shadow-[0_0_10px_#ff4655]"
-                                        />
-                                    </div>
-                                    <div className="text-[10px] font-mono text-accent-red animate-pulse tracking-[0.5em] uppercase">
-                                        /// Decoding_Match_Data_V3 ///
-                                    </div>
-                                </motion.div>
-                            )}
-                        </AnimatePresence>
+
+
 
                         {/* Content */}
-                        <div className={`p-4 md:p-8 space-y-6 md:space-y-8 transition-all duration-500 ${isLoading ? 'blur-xl scale-110' : 'blur-0 scale-100'}`}>
+                        <div className="p-4 md:p-8 space-y-6 md:space-y-8">
+
+
 
                             {/* Key Stats Row */}
                             <motion.div
